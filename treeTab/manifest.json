@@ -1,0 +1,58 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "icons/x128.png",
+         "16": "icons/x16.png",
+         "32": "icons/x32.png",
+         "48": "icons/x48.png"
+      }
+   },
+   "background": {
+      "service_worker": "js/background.js"
+   },
+   "commands": {
+      "globalSearch": {
+         "description": "__MSG_commandGlobalSearch__",
+         "suggested_key": {
+            "default": "Shift+Ctrl+K",
+            "mac": "Shift+Command+K"
+         }
+      },
+      "openLinkMap": {
+         "description": "__MSG_commandTriggerLinkMap__",
+         "suggested_key": {
+            "default": "Shift+Ctrl+L",
+            "mac": "Shift+Command+L"
+         }
+      }
+   },
+   "content_security_policy": {
+      "extension_pages": "script-src 'self' http://localhost:9000; object-src 'self';"
+   },
+   "default_locale": "en",
+   "description": "__MSG_extDesc__",
+   "icons": {
+      "128": "icons/x128.png",
+      "16": "icons/x16.png",
+      "32": "icons/x32.png",
+      "48": "icons/x48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtZgTCYE4BJbRty/6p8tnDMUouUiSlT2w4E6aOYlj9DDV74CfvcT82hwQZzi49SfCneex3yUXYd/lNUqOSZSfdGrnZoKWKWU1MiqeCrAR6W2wNRCJ0a9VqPCryi3aJl5q7oQ8SHkBXXc06HfoLlKJpY/IK0Lk7hjuvDr51Iiw/LZDsHzwfVEbWzkj0ZsZZhqsFQ4liz4vgsoHyUv0GYq4t4ACwpKI6jSqfFeZ57yMcoQUltWiZEnbzOrpc0OEno/9gRfUW9gacIhYTk1SAi9bCvTHeJ/tfXV0W4iSDl1UPKArK7J3MtyXbCGuVCGaBnFchYqJ52xSiuxwmVt3w+/KPQIDAQAB",
+   "manifest_version": 3,
+   "minimum_chrome_version": "96",
+   "name": "Link Map",
+   "oauth2": {
+      "client_id": "935733596538-ji6oo5ippg1rdm7o3c2o8lp56g1chq7e.apps.googleusercontent.com",
+      "scopes": [ "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile" ]
+   },
+   "permissions": [ "tabs", "storage", "activeTab", "downloads", "system.display", "favicon", "tabGroups", "identity", "sidePanel", "contextMenus" ],
+   "side_panel": {
+      "default_path": "tree.html"
+   },
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "1.1.5",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "icons/*", "images/*", "fonts/*" ]
+   } ]
+}
