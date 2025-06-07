@@ -67,7 +67,7 @@
             this.downloaded = true;
             // openURL(element.href);
         }
-        
+        // 12312
         tryDownload() {
             if (!location.href.match(this.url)) return;
             console.log('url matched:', this.url);

@@ -76,9 +76,8 @@
       }
     }
   }
-  const autoDownload1 = new AutoDownload(/https:\/\/www.sunwenjie.top\/article\//, () => document.querySelector('a[href^="https://mega.nz/file/"]'));
-  autoDownload1.tryDownload();
-  const autoDownload2 = new AutoDownload(/https:\/\/mega.nz\/file\//, () => document.querySelector("button.mega-button.positive.js-default-download.js-standard-download"));
-  autoDownload2.tryDownload();
-  new AutoDownload(/www\.nexusmods\.com\/clairobscurexpedition33\/mods\/[0-9]+?\?tab=files\&file_id=/, () => document.querySelector("button#slowDownloadButton")).tryDownload();
+  new AutoDownload(/https:\/\/www.sunwenjie.top\/article\//, () => document.querySelector('a[href^="https://mega.nz/file/"]')).tryDownloadAsync();
+  new AutoDownload(/https:\/\/mega.nz\/file\//, () => document.querySelector("button.mega-button.positive.js-default-download.js-standard-download")).tryDownloadAsync();
+  new AutoDownload(/www\.nexusmods\.com\/.*?\/mods\/[0-9]+?\?tab=files\&file_id=/, () => document.querySelector("button#slowDownloadButton")).tryDownloadAsync();
+  new AutoDownload(/https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/, () => document.querySelector('a.hope-button[href^="https://asmr.121231234.xyz/asmr/"][href$=".mp3"], a.hope-button[href^="https://asmr.121231234.xyz/asmr/"][href$=".flac"], [href$=".wav"], [href$=".ogg"], [href$=".m4a"]')).tryDownloadAsync();
 })();
