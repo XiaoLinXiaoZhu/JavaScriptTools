@@ -102,28 +102,38 @@
     // 匹配url使用 正则表达式 url.match(/https:\/\/www.sunwenjie.top\/article\//)
     // 获取元素使用 document.querySelector('a[href^="https://mega.nz/file/"]')
     // 下载方法是点击元素
-    const autoDownload1 = new AutoDownload(
+    new AutoDownload(
         /https:\/\/www.sunwenjie.top\/article\//,
         () => document.querySelector('a[href^="https://mega.nz/file/"]')
-    );
-    autoDownload1.tryDownload();
+    ).tryDownloadAsync();
 
     // 2. 下载 https://mega.nz/file/ 的下载按钮
     // 匹配url使用 正则表达式 url.match(/https:\/\/mega.nz\/file\//)
     // 获取的元素为 <button class="mega-button positive js-default-download js-standard-download"> <span>下载</span> </button>
     // 下载方法是点击元素
 
-    const autoDownload2 = new AutoDownload(
+    new AutoDownload(
         /https:\/\/mega.nz\/file\//,
         () => document.querySelector('button.mega-button.positive.js-default-download.js-standard-download')
-    );
-    autoDownload2.tryDownload();
+    ).tryDownloadAsync();
 
+
+
+    // 3. 下载 https://www.nexusmods.com/*/mods/ 的下载按钮
     new AutoDownload(
-        /www\.nexusmods\.com\/clairobscurexpedition33\/mods\/[0-9]+?\?tab=files\&file_id=/,
+        /www\.nexusmods\.com\/.*?\/mods\/[0-9]+?\?tab=files\&file_id=/,
         () => document.querySelector('button#slowDownloadButton')
-    ).tryDownload();
-    
-    // 123
+    ).tryDownloadAsync();
+
+    // 4. 下载 https://www.asmrgay.com/*/**  ……  /.+\.[mp3|flac|wav|ogg|m4a] 中的 形如：
+    // <a class="hope-button hope-c-ivMHWx hope-c-ivMHWx-kcPQpq-variant-subtle hope-c-ivMHWx-kWSPeQ-size-md hope-c-ivMHWx-dvmlqS-cv hope-c-PJLV hope-c-PJLV-iikaotv-css" type="button" role="button" href="https://asmr.121231234.xyz/asmr/%E4%B8%AD%E6%96%87%E9%9F%B3%E5%A3%B0/Flora%E5%9C%86%E5%9C%86/%E5%90%8C%E5%AD%A6%E5%A6%88%E5%A6%88%E5%B8%AE%E4%BD%A0%E8%BA%AB%E5%BF%83%E8%A7%A3%E5%8E%8B%E3%80%90Flora%E5%9C%86%E5%9C%86%E3%80%91.mp3?sign=6-zcMST_ekgGVl5JkAYJ-Ffjl4SawtszJQkIZ6iCWVI=:1827053578" target="_blank">下载</a>
+    // 的链接
+    new AutoDownload(
+        /https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/,
+        () => document.querySelector('a.hope-button[href^="https://asmr.121231234.xyz/asmr/"]' +
+            '[href$=".mp3"], a.hope-button[href^="https://asmr.121231234.xyz/asmr/"][href$=".flac"], ' +
+            '[href$=".wav"], [href$=".ogg"], [href$=".m4a"]')
+    ).tryDownloadAsync();
+
 }
 )();
