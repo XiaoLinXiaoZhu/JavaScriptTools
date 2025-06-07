@@ -28,9 +28,11 @@ const reCommit = () => {
             }
             
             // 添加[skip-hook]标记并重新提交
-            const amendCommand = `git commit --amend -m "${commitMsg.trim()} [skip-hook]"`;
+            // 使用PowerShell的临时环境变量语法，只对单个命令有效
+            const amendCommand = `git -c "env.SKIP_HOOK=1" commit --amend -m "${commitMsg.trim()} [skip-hook]"`;
             console.log('🔁 正在将构建产物加入提交...');
             
+            // 不再需要指定shell为PowerShell，因为使用git自带的环境变量设置方式
             exec(amendCommand, (error, stdout, stderr) => {
                 if (error) {
                     console.error(`提交出错: ${error}`);
