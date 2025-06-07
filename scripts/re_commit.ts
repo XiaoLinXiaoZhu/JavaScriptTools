@@ -1,11 +1,6 @@
 // 重新提交更改
 ///@ts-ignore
 import { exec, execSync } from 'child_process';
-// echo "📎 正在添加 dist/ 文件到暂存区..."
-// git add dist/*.js
-
-// echo "🔁 正在将构建产物加入提交..."
-// SKIP_HOOK=1 git commit --amend -m "$(git log -1 --pretty=%B) [skip-hook]"
 
 const reCommit = () => {
     // 使用异步exec方法在独立进程中执行git命令
@@ -27,9 +22,9 @@ const reCommit = () => {
                 return;
             }
             
-            // 添加[skip-hook]标记并重新提交
-            // 在Windows上，使用set命令设置环境变量，只对当前命令有效
-            const amendCommand = `powershell -Command "$env:SKIP_HOOK='1'; git commit --amend -m \\"${commitMsg.trim()} [skip-hook]\\""}`;
+            // 之前的方法太复杂且容易出错，改用最简单的方式：
+            // 我们直接调用带命令标签的git命令，将不会触发pre-commit钩子
+            const amendCommand = `git commit --amend --no-verify -m "${commitMsg.trim()} [skip-hook]"`;
             console.log('🔁 正在将构建产物加入提交...');
             
             exec(amendCommand, (error, stdout, stderr) => {

@@ -13,6 +13,7 @@
 // @updateURL https://raw.githubusercontent.com/XiaoLinXiaoZhu/JavaScriptTools/main/dist/AutoClick.js
 // ==/UserScript==
 
+
 (function () {
     'use strict';
     // test
@@ -86,7 +87,7 @@
             console.log('url matched:', this.url);
 
             let elapsedTime = 0;
-            while (elapsedTime < timeOut) {
+            while (elapsedTime < timeOut || timeOut == -1) {
                 elapsedTime += waitTime;
                 if (this.downloaded) {
                     console.log('已经下载过了，为什么还在？');
@@ -130,10 +131,14 @@
     // 的链接
     new AutoDownload(
         /https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/,
-        () => document.querySelector('a.hope-button[href^="https://asmr.121231234.xyz/asmr/"]' +
-            '[href$=".mp3"], a.hope-button[href^="https://asmr.121231234.xyz/asmr/"][href$=".flac"], ' +
-            '[href$=".wav"], [href$=".ogg"], [href$=".m4a"]')
-    ).tryDownloadAsync();
+        () => document.querySelector(
+            'a.hope-button[href^="https://asmr."][href$=".mp3"],' +
+            'a.hope-button[href^="https://asmr."][href$=".flac"],' +
+            'a.hope-button[href^="https://asmr."][href$=".wav"],' +
+            'a.hope-button[href^="https://asmr."][href$=".ogg"],' +
+            'a.hope-button[href^="https://asmr."][href$=".m4a"]'
+        )
+    ).tryDownloadAsync(1000, -1);
 
 }
 )();
