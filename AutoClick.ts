@@ -15,7 +15,7 @@
 
 (function () {
     'use strict';
-
+    // test
     function openURL(url) {
         let aLabel = document.createElement('a');
         //设置链接
