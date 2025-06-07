@@ -4,6 +4,6 @@ export type buildAction = {
 }
 
 export const buildList: buildAction[] = [
-    { input: "autoclick.ts", output: "dist/autoclick.js" }
+    { input: "AutoClick.ts", output: "dist/AutoClick.js" }
     // 添加更多需要编译的文件
 ];

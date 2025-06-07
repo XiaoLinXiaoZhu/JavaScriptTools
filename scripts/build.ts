@@ -37,6 +37,20 @@ async function compileFile({ input, output }: buildAction) {
 }
 
 async function build() {
+  // 确保 dist 目录存在
+  try {
+    await fs.mkdir("dist", { recursive: true });
+    console.log("创建 dist 目录成功");
+  } catch (e) {
+    console.error("创建 dist 目录失败:", e);
+  }
+  // clear the dist directory
+  try {
+    await fs.rm("dist", { recursive: true, force: true });
+    console.log("清理 dist 目录成功");
+  } catch (e) {
+    console.error("清理 dist 目录失败:", e);
+  }
   for (const file of files) {
     await compileFile(file);
   }
