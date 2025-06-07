@@ -131,13 +131,15 @@
     // 的链接
     new AutoDownload(
         /https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/,
-        () => document.querySelector(
-            'a.hope-button[href^="https://asmr."][href$=".mp3"],' +
-            'a.hope-button[href^="https://asmr."][href$=".flac"],' +
-            'a.hope-button[href^="https://asmr."][href$=".wav"],' +
-            'a.hope-button[href^="https://asmr."][href$=".ogg"],' +
-            'a.hope-button[href^="https://asmr."][href$=".m4a"]'
-        )
+        () =>{
+            const elements = document.querySelector('a.hope-button');
+            if (!elements) return null;
+            // 返回 herf 合规的元素
+            const okElements = Array.from(elements.querySelectorAll('a')).filter(
+                (el: HTMLAnchorElement) => el.href.match(/https:\/\/asmr\.\d+\.xyz.*?\.(mp3|flac|wav|ogg|m4a)/)
+            );
+            return okElements.length > 0 ? okElements[0] : null;
+        }
     ).tryDownloadAsync(1000, -1);
 
 }
