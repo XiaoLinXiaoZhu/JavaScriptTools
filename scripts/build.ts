@@ -7,6 +7,9 @@ import { join, dirname } from "path";
 ///@ts-ignore
 const transpiler = new Bun.Transpiler({
   loader: "ts",
+  target: "browser",
+  minifyWhitespace: true,
+  inline: true,
 });
 
 import { buildList as files, type buildAction } from "./build_list";
@@ -19,11 +22,7 @@ async function compileFile({ input, output }: buildAction) {
     const userScriptHeader = code.split("// ==/UserScript==")[0] + "// ==/UserScript==\n\n";
 
     // 转译并压缩代码
-    const jsCode = transpiler.transformSync(code, {
-      loader: "ts",
-      minify: true,           // 启用压缩
-      preserveComments: true, // 保留所有注释（包括 UserScript 头部）
-    });
+    const jsCode = transpiler.transformSync(code);
 
     // 写入文件时，先写头部，再写压缩后的代码
     const finalCode = userScriptHeader + jsCode;
