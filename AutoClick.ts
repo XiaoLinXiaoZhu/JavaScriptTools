@@ -123,5 +123,6 @@
         /www\.nexusmods\.com\/clairobscurexpedition33\/mods\/[0-9]+?\?tab=files\&file_id=/,
         () => document.querySelector('button#slowDownloadButton')
     ).tryDownload();
+    
 }
 )();

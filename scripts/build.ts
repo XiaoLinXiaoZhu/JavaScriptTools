@@ -8,7 +8,7 @@ import { join, dirname } from "path";
 const transpiler = new Bun.Transpiler({
   loader: "ts",
   target: "browser",
-  minifyWhitespace: true,
+  minifyWhitespace: false,
   inline: true,
 });
 
