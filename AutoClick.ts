@@ -141,6 +141,5 @@
             return okElements.length > 0 ? okElements[0] : null;
         }
     ).tryDownloadAsync(1000, -1);
-
 }
 )();
