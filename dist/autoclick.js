@@ -79,5 +79,11 @@
   new AutoDownload(/https:\/\/www.sunwenjie.top\/article\//, () => document.querySelector('a[href^="https://mega.nz/file/"]')).tryDownloadAsync();
   new AutoDownload(/https:\/\/mega.nz\/file\//, () => document.querySelector("button.mega-button.positive.js-default-download.js-standard-download")).tryDownloadAsync();
   new AutoDownload(/www\.nexusmods\.com\/.*?\/mods\/[0-9]+?\?tab=files\&file_id=/, () => document.querySelector("button#slowDownloadButton")).tryDownloadAsync();
-  new AutoDownload(/https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/, () => document.querySelector('a.hope-button[href^="https://asmr."][href$=".mp3"],a.hope-button[href^="https://asmr."][href$=".flac"],a.hope-button[href^="https://asmr."][href$=".wav"],a.hope-button[href^="https://asmr."][href$=".ogg"],a.hope-button[href^="https://asmr."][href$=".m4a"]')).tryDownloadAsync(1000, -1);
+  new AutoDownload(/https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/, () => {
+    const elements = document.querySelector("a.hope-button");
+    if (!elements)
+      return null;
+    const okElements = Array.from(elements.querySelectorAll("a")).filter((el) => el.href.match(/https:\/\/asmr\.\d+\.xyz.*?\.(mp3|flac|wav|ogg|m4a)/));
+    return okElements.length > 0 ? okElements[0] : null;
+  }).tryDownloadAsync(1000, -1);
 })();
