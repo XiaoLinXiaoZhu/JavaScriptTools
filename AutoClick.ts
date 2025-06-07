@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AutoTool_Download
 // @namespace    https://github.com/XiaoLinXiaoZhu/AutoTools/tree/main/ASMRTools
-// @version      0.3
+// @version      0.4
 // @description  XLXZ's 自动下载 小工具，本质上是匹配特殊内容并且模拟点击
 // @author       XLXZ
 // @match        https://www.sunwenjie.top/article/*
