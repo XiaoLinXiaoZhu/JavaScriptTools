@@ -81,7 +81,8 @@
   // 不满足上面需要remove的，就processedCards++
   // 进行异步处理，增加加载速度
   async function editCards(card) {
-
+    // debug
+    console.log(`🟢editCards, processedCards: ${processedCards}, card: ${card}`);
     // 根据uid获取follower 并进行筛选
     const uid = getUid(card);
     if (uid === -1) {
@@ -109,7 +110,7 @@
     // card.style.border = '1px solid red'; // 添加红色边框以示例
   }
 
-  async function removeIfBlockByADBlocker(card) {
+  function removeIfBlockByADBlocker(card) {
     // 检查卡片是否被广告屏蔽
     const cardContent = card.querySelector('.bili-video-card.is-rcmd');
     // cardContent && (cardContent.style.border = '1px solid blue'); // 添加蓝色边框以示例
