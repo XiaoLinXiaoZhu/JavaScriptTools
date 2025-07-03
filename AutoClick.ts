@@ -57,7 +57,7 @@
                 console.log('element not found');
                 return;
             }
-            
+
             console.log('element:', element);
             // 在新的页面打开 herf
             //debug
@@ -97,6 +97,66 @@
                 await new Promise(resolve => setTimeout(resolve, waitTime)); // 等待 1 秒
             }
         }
+
+        async tryDownloadAsyncByFetch(waitTime = 1000, timeOut = 1e4) {
+            if (!location.href.match(this.url))
+                return;
+            console.log("url matched:", this.url);
+            let elapsedTime = 0;
+            while (elapsedTime < timeOut || timeOut == -1) {
+                elapsedTime += waitTime;
+                if (this.downloaded) {
+                    console.log("已经下载过了，为什么还在？");
+                    break;
+                }
+                const element = this.getElement();
+                if (!element) {
+                    console.log("element not found");
+                    await new Promise((resolve) => setTimeout(resolve, waitTime));
+                    continue;
+                }
+                console.log("element:", element);
+                let url: string | null = null;
+                if ('href' in element && typeof (element as any).href === 'string') {
+                    url = (element as HTMLAnchorElement).href;
+                } else {
+                    url = element.getAttribute("href");
+                }
+                if (!url) {
+                    console.log("element has no href");
+                    await new Promise((resolve) => setTimeout(resolve, waitTime));
+                    continue;
+                }
+                console.log("Fetching URL:", url);
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        console.error("Fetch failed with status:", response.status);
+                        await new Promise((resolve) => setTimeout(resolve, waitTime));
+                        continue;
+                    }
+                    const blob = await response.blob();
+                    // Remove query parameters and decode filename
+                    let filename = url.split("/").pop() || "download";
+                    filename = filename.split("?")[0];
+                    filename = decodeURIComponent(filename);
+
+                    const downloadLink = document.createElement("a");
+                    downloadLink.href = URL.createObjectURL(blob);
+                    downloadLink.download = filename;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(downloadLink.href);
+                    console.log("Download triggered for:", url);
+                    this.downloaded = true;
+                } catch (error) {
+                    console.error("Download failed:", error);
+                    await new Promise((resolve) => setTimeout(resolve, waitTime));
+                    continue;
+                }
+            }
+        }
     }
 
     // 1. 下载 https://www.sunwenjie.top/article/ 的 mega 链接
@@ -131,10 +191,10 @@
     // 的链接
     new AutoDownload(
         /https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/,
-        () =>{
+        () => {
             const elements = document.querySelector('a.hope-button');
             if (!elements) return null;
-            // 返回 herf 合规的元素
+            // 返回 href 合规的元素
             const okElements = Array.from(elements.querySelectorAll('a')).filter(
                 (el: HTMLAnchorElement) => el.href.match(/https:\/\/asmr\.\d+\.xyz.*?\.(mp3|flac|wav|ogg|m4a)/)
             );

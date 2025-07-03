@@ -4,7 +4,7 @@
 // @name:zh-TW   屏蔽B站营销视频和推广视频
 // @name:en      Block Bilibili's marketing videos and promotional videos
 // @namespace    http://tampermonkey.net/
-// @version      2.5
+// @version      2.6
 // @description  屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-CN  屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-TW  遮罩部分B站（bilibili）主頁推薦的視頻卡片，遮罩up主粉絲少於一定數量的，遮罩直播與右側推廣，遮罩帶廣告標籤的
@@ -26,8 +26,10 @@
   'use strict';
 
 
-  // 定义需要屏蔽的两种视频卡片类名
-  const BLOCKED_CLASSES = ['floor-single-card', 'bili-live-card is-rcmd'];
+  // 定义需要筛选屏蔽的视频卡片类名
+  const FILTER_CLASSES = ['.bili-feed-card'];
+  // 定义需要直接直接屏蔽的直播类名
+  const FILTER_BLOCK_CLASSES = ['.floor-single-card'];
   // 定义需要屏蔽的最小的follower数
   const MIN_FOLLOWER = 2000;
   // 定义接口前缀
@@ -80,6 +82,7 @@
   // 进行异步处理，增加加载速度
   async function editCards(card) {
 
+    // 根据uid获取follower 并进行筛选
     const uid = getUid(card);
     if (uid === -1) {
       //console.log(`🟢remove because getUid error, uid: ${uid}`);
@@ -96,9 +99,25 @@
     if (follower < MIN_FOLLOWER) {
       //console.log(`🟢remove because follower < ${MIN_FOLLOWER}, uid: ${uid}, follower: ${follower}`);
       logMessages += `🟢remove because follower < ${MIN_FOLLOWER}, uid: ${uid}, follower: ${follower}\n`;
-      card.remove();
+      removeCard(card);
       return;
     }
+  }
+
+  async function removeCard(card){
+    card.remove();
+    // card.style.border = '1px solid red'; // 添加红色边框以示例
+  }
+
+  async function removeIfBlockByADBlocker(card) {
+    // 检查卡片是否被广告屏蔽
+    const cardContent = card.querySelector('.bili-video-card.is-rcmd');
+    // cardContent && (cardContent.style.border = '1px solid blue'); // 添加蓝色边框以示例
+    if (!cardContent || cardContent.innerHTML.match(/<!----><div class=".+?"><\/div><!---->/)) {
+      removeCard(card);
+      return true; // 返回true表示卡片被广告屏蔽
+    }
+    return false; // 返回false表示卡片未被广告屏蔽
   }
 
   let isProcessing = false;
@@ -118,9 +137,15 @@
 
   // 对新加载的内容进行观察
   function observeNewCards() {
-    const cards = document.querySelectorAll('.bili-video-card.is-rcmd, .floor-single-card, .bili-live-card.is-rcmd');
-    cards.forEach(card => {
+    const blockCards = document.querySelectorAll(FILTER_BLOCK_CLASSES.join(', '));
+    blockCards.forEach(card => {
+      removeCard(card);
+    });
+    const filterCards = document.querySelectorAll(FILTER_CLASSES.join(', '));
+    filterCards.forEach(card => {
       // 对每一个card进行观察
+      // 如果被广告屏蔽了，就直接remove，并不再进行处理
+      if (removeIfBlockByADBlocker(card)) return;
       // 如果已经处理过了，就不再处理
       if (card.dataset.processed) return;
       observer.observe(card);
@@ -139,11 +164,6 @@
     //console.log(`🤓mutationObserver, mutations: ${mutations.length}`);
 
     mutations.forEach(mutation => {
-      //输出变动的节点的信息,转化为字符串输出
-
-      //console.log(`👉🏻mutationObserver, mutation: ${JSON.stringify(mutation)}`);
-      //logMessages += `👉🏻mutationObserver, mutation: ${JSON.stringify(mutation)}\n`;
-
       if (mutation.type === 'childList') {
         observeNewCards();
       }
