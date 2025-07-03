@@ -4,7 +4,7 @@
 // @name:zh-TW   屏蔽B站营销视频和推广视频
 // @name:en      Block Bilibili's marketing videos and promotional videos
 // @namespace    http://tampermonkey.net/
-// @version      2.6
+// @version      2.7
 // @description  屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-CN  屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-TW  遮罩部分B站（bilibili）主頁推薦的視頻卡片，遮罩up主粉絲少於一定數量的，遮罩直播與右側推廣，遮罩帶廣告標籤的
@@ -81,8 +81,7 @@
   // 不满足上面需要remove的，就processedCards++
   // 进行异步处理，增加加载速度
   async function editCards(card) {
-    // debug
-    console.log(`🟢editCards, processedCards: ${processedCards}, card: ${card}`);
+    processedCards++;
     // 根据uid获取follower 并进行筛选
     const uid = getUid(card);
     if (uid === -1) {
