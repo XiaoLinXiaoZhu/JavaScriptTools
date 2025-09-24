@@ -4,7 +4,7 @@
 // @name:zh-TW   屏蔽B站营销视频和推广视频
 // @name:en      Block Bilibili's marketing videos and promotional videos
 // @namespace    http://tampermonkey.net/
-// @version      2.7
+// @version      2.8
 // @description  屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-CN  屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-TW  遮罩部分B站（bilibili）主頁推薦的視頻卡片，遮罩up主粉絲少於一定數量的，遮罩直播與右側推廣，遮罩帶廣告標籤的
@@ -30,6 +30,8 @@
   const FILTER_CLASSES = ['.bili-feed-card'];
   // 定义需要直接直接屏蔽的直播类名
   const FILTER_BLOCK_CLASSES = ['.floor-single-card'];
+  // 定义需要直接屏蔽的作者uid
+  const FILTER_BLOCK_UIDS = [113560378];
   // 定义需要屏蔽的最小的follower数
   const MIN_FOLLOWER = 2000;
   // 定义接口前缀
@@ -87,7 +89,14 @@
     if (uid === -1) {
       //console.log(`🟢remove because getUid error, uid: ${uid}`);
       logMessages += `🟢remove because getUid error, uid: ${uid}\n`;
-      card.remove();
+      removeCard(card);
+      return;
+    }
+
+    // 如果uid在FILTER_BLOCK_UIDS中，直接remove
+    if (FILTER_BLOCK_UIDS.includes(uid)) {
+      logMessages += `🟢remove because uid in FILTER_BLOCK_UIDS, uid: ${uid}\n`;
+      removeCard(card);
       return;
     }
 
