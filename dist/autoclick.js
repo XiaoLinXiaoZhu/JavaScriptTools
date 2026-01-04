@@ -135,7 +135,31 @@
   }
   new AutoDownload(/https:\/\/www.sunwenjie.top\/article\//, () => document.querySelector('a[href^="https://mega.nz/file/"]')).tryDownloadAsync();
   new AutoDownload(/https:\/\/mega.nz\/file\//, () => document.querySelector("button.mega-button.positive.js-default-download.js-standard-download")).tryDownloadAsync();
-  new AutoDownload(/www\.nexusmods\.com\/.*?\/mods\/[0-9]+?\?tab=files\&file_id=/, () => document.querySelector("button#slowDownloadButton")).tryDownloadAsync();
+  new AutoDownload(/www\.nexusmods\.com\/.*?\/mods\/[0-9]+?\?tab=files\&file_id=/, () => {
+    // document.querySelector("button#slowDownloadButton")).tryDownloadAsync();
+    // nexusmods 改用了tailwindcss，而不再使用传统的class了，这导致 class选择器失效。
+    // 现在它的样式为：
+    // document.querySelector("#section > div > div.wrap.flex > div:nth-child(2) > div > div.tabcontent.tabcontent-mod-page > mod-file-download").shadowRoot.querySelector("#upsell-cards > div.flex.flex-col.justify-between.gap-y-6.rounded-lg.bg-surface-translucent-low.p-6 > button")
+    // <button class="min-h-9 px-3 min-w-24 relative whitespace-nowrap transition [&amp;&gt;*:first-child]:relative flex items-center justify-center rounded before:rounded cursor-pointer border border-stroke-moderate hover:border-stroke-strong bg-neutral-800 text-neutral-moderate hover:text-neutral-strong hover-overlay xs:self-start sm:self-auto" type="button"><span class="flex items-center gap-x-1.5"><span class="typography-body-lg grow text-left leading-5">Slow download</span></span></button>
+
+    const shadowHost = document.querySelector("mod-file-download");
+    if (!shadowHost) {
+      console.log("shadowHost not found");
+      return null;
+    }
+    const shadowRoot = shadowHost.shadowRoot;
+    if (!shadowRoot) {
+      console.log("shadowRoot not found");
+      return null;
+    }
+    const button = shadowRoot.querySelector("button");
+    // 第一个按钮是慢速下载，第二个按钮是快速下载
+    if (!button) {
+      console.log("button not found");
+      return null;
+    }
+    return button;
+  }).tryDownloadAsync(1000, 30000);
   new AutoDownload(/https:\/\/www\.asmrgay\.com\/.*?\/.+\.(mp3|flac|wav|ogg|m4a)/, () => {
     const elements = document.querySelector("a.hope-button");
     if (!elements)
