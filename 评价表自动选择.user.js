@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.0
 // @description  自动选择"很好"、"强烈推荐"、"最满意课堂"
-// @author       You
+// @author       XLXZ
 // @match        *://*/*
 // @grant        none
 // ==/UserScript==
