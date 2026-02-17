@@ -420,10 +420,11 @@
 			"shortId": "O1.8",
 			"type": "objective",
 			"content": "bilibili-block 脚本支持通过 Tampermonkey 菜单配置 FILTER_BLOCK_UIDS 和 MIN_FOLLOWER，用户无需修改代码",
-			"status": "planned",
+			"status": "done",
 			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
 			"childrenIds": [
-				"4cbd4dc3-0628-4b46-a07f-36b993b9759c"
+				"4cbd4dc3-0628-4b46-a07f-36b993b9759c",
+				"1fd726e5-4fa5-403e-968d-3d5e152d599a"
 			],
 			"codeBindings": [],
 			"createdBy": {
@@ -431,9 +432,15 @@
 				"timestamp": "2026-02-17T15:03:54.765Z",
 				"action": "created"
 			},
-			"modifiedBy": [],
+			"modifiedBy": [
+				{
+					"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+					"timestamp": "2026-02-17T15:05:58.966Z",
+					"action": "updated: content, status→done"
+				}
+			],
 			"assumption": "用户希望 bilibili-block 脚本的配置项（FILTER_BLOCK_UIDS、MIN_FOLLOWER）可以通过 Tampermonkey 的 GM API 在 Greasyfork 上配置，无需修改代码。这是 G1 下的一个新功能需求。",
-			"maxChildIndex": 1
+			"maxChildIndex": 2
 		},
 		"4cbd4dc3-0628-4b46-a07f-36b993b9759c": {
 			"id": "4cbd4dc3-0628-4b46-a07f-36b993b9759c",
@@ -460,10 +467,20 @@
 			"shortId": "I1.8.1.1",
 			"type": "impl",
 			"content": "修改 bilibili-block 的 meta.ts（添加 grant 权限、提升版本号）和 index.ts（使用 GM API 配置），推送触发 CI/CD",
-			"status": "in_progress",
+			"status": "done",
 			"parentId": "4cbd4dc3-0628-4b46-a07f-36b993b9759c",
 			"childrenIds": [],
-			"codeBindings": [],
+			"codeBindings": [
+				{
+					"commitHash": "e8902677e25ac4e5cb2a647324932842339a586c",
+					"commitMessage": "[intent:I1.8.1.1] feat(bilibili-block): 支持通过 Tampermonkey 菜单配置屏蔽规则",
+					"files": [
+						".roo/intent-tree.json"
+					],
+					"diffSummary": "1 file(s), +119 -5",
+					"timestamp": "2026-02-17T15:05:52.885Z"
+				}
+			],
 			"createdBy": {
 				"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
 				"timestamp": "2026-02-17T15:04:07.395Z",
@@ -474,9 +491,62 @@
 					"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
 					"timestamp": "2026-02-17T15:04:13.817Z",
 					"action": "updated: content, status→in_progress"
+				},
+				{
+					"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+					"timestamp": "2026-02-17T15:05:52.885Z",
+					"action": "bound commit e890267"
+				},
+				{
+					"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+					"timestamp": "2026-02-17T15:05:52.885Z",
+					"action": "updated: status→done"
 				}
 			],
 			"assumption": "需要修改 meta.ts 添加 GM API grant 权限，修改 index.ts 使用 GM API 读取配置并注册菜单，提升版本号，然后推送触发 CI/CD。"
+		},
+		"1fd726e5-4fa5-403e-968d-3d5e152d599a": {
+			"id": "1fd726e5-4fa5-403e-968d-3d5e152d599a",
+			"shortId": "A1.8.2",
+			"type": "approach",
+			"content": "在 B 站\"不感兴趣\"面板中注入「🚫 屏蔽此UP主」选项，点击后自动将 UID 加入屏蔽列表并移除卡片，同时优化整体配置体验",
+			"status": "planned",
+			"parentId": "5633576d-4952-4e5d-a1bc-23482e616ac8",
+			"childrenIds": [
+				"b91c6f5d-a557-4e54-b620-38f1f117133b"
+			],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+				"timestamp": "2026-02-17T15:22:34.151Z",
+				"action": "created"
+			},
+			"modifiedBy": [],
+			"assumption": "用户觉得上一版的 prompt 弹窗配置体验差，希望能直接在 B 站视频卡片的\"不感兴趣\"面板中注入一个\"屏蔽此UP主\"选项，点击后自动将 UID 加入屏蔽列表。这是对 O1.8 的体验优化，属于同一个目标下的新 approach。",
+			"maxChildIndex": 1
+		},
+		"b91c6f5d-a557-4e54-b620-38f1f117133b": {
+			"id": "b91c6f5d-a557-4e54-b620-38f1f117133b",
+			"shortId": "I1.8.2.1",
+			"type": "impl",
+			"content": "实现\"不感兴趣\"面板注入 + 优化配置菜单体验 + 提升版本号 + 推送",
+			"status": "in_progress",
+			"parentId": "1fd726e5-4fa5-403e-968d-3d5e152d599a",
+			"childrenIds": [],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+				"timestamp": "2026-02-17T15:22:42.676Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+					"timestamp": "2026-02-17T15:22:48.047Z",
+					"action": "updated: content, status→in_progress"
+				}
+			],
+			"assumption": "需要：1) 监听\"不感兴趣\"面板的出现（MutationObserver 或事件委托），2) 注入新选项，3) 从面板关联的卡片中提取 UID，4) 点击后加入屏蔽列表并移除卡片。同时优化菜单配置的体验。"
 		}
 	},
 	"rootIds": [
@@ -496,7 +566,9 @@
 		"I1.7.1": "a878f075-36bd-4e0f-a961-87bb6d5a7d8f",
 		"O1.8": "5633576d-4952-4e5d-a1bc-23482e616ac8",
 		"A1.8.1": "4cbd4dc3-0628-4b46-a07f-36b993b9759c",
-		"I1.8.1.1": "5932aec0-a912-4af4-b03f-90660370e5b7"
+		"I1.8.1.1": "5932aec0-a912-4af4-b03f-90660370e5b7",
+		"A1.8.2": "1fd726e5-4fa5-403e-968d-3d5e152d599a",
+		"I1.8.2.1": "b91c6f5d-a557-4e54-b620-38f1f117133b"
 	},
 	"rootMaxChildIndex": 1
 }
