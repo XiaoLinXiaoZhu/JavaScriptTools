@@ -1,0 +1,118 @@
+{
+	"version": 1,
+	"nodes": {
+		"9fcfb892-37ae-477e-a133-530b729caefd": {
+			"id": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"shortId": "G1",
+			"type": "goal",
+			"content": "统一仓库为 TypeScript monorepo 模式：src/ 下每个脚本一个文件夹 + meta.ts 配置 + shared utils，构建输出到 dist/{category}/xxx.user.js",
+			"status": "planned",
+			"parentId": null,
+			"childrenIds": [
+				"d4dc577a-4604-4dbb-b024-27342f8c09e2",
+				"9a0c8983-d975-4868-b59c-65a38eaa6779"
+			],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:24:19.010Z",
+				"action": "created"
+			},
+			"modifiedBy": [],
+			"assumption": "用户明确要求统一仓库模式：每个脚本一个文件夹，TS 源码，构建输出单一 JS 文件。这是一个全新的目标。",
+			"maxChildIndex": 2
+		},
+		"d4dc577a-4604-4dbb-b024-27342f8c09e2": {
+			"id": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
+			"shortId": "O1.1",
+			"type": "objective",
+			"content": "搭建构建基础设施：package.json、tsconfig.json、esbuild 构建脚本、shared 类型定义",
+			"status": "done",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [
+				"de7a9a8d-4e2f-4df3-9bf1-d10222509096"
+			],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:24:26.361Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:32:10.751Z",
+					"action": "updated: content, status→done"
+				}
+			],
+			"assumption": "构建系统是整个目标的基础设施，需要先搭建好才能迁移脚本。",
+			"maxChildIndex": 1
+		},
+		"9a0c8983-d975-4868-b59c-65a38eaa6779": {
+			"id": "9a0c8983-d975-4868-b59c-65a38eaa6779",
+			"shortId": "O1.2",
+			"type": "objective",
+			"content": "将所有 7 个油猴脚本迁移到 src/ 下的 TS 文件夹结构",
+			"status": "done",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:24:33.897Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:26:20.254Z",
+					"action": "updated: content, status→in_progress"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:32:17.837Z",
+					"action": "updated: content, status→done"
+				}
+			],
+			"assumption": "迁移所有油猴脚本是用户明确要求的。"
+		},
+		"de7a9a8d-4e2f-4df3-9bf1-d10222509096": {
+			"id": "de7a9a8d-4e2f-4df3-9bf1-d10222509096",
+			"shortId": "A1.1.1",
+			"type": "approach",
+			"content": "使用 esbuild + 自定义 Node.js 构建脚本，meta.ts 配置文件模式",
+			"status": "done",
+			"parentId": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
+			"childrenIds": [],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:24:45.700Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:24:51.256Z",
+					"action": "updated: content, status→in_progress"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:32:05.732Z",
+					"action": "updated: content, status→done"
+				}
+			],
+			"assumption": "使用 esbuild 是专家推荐的最佳方案，适合油猴脚本的 IIFE 输出和可读性要求。"
+		}
+	},
+	"rootIds": [
+		"9fcfb892-37ae-477e-a133-530b729caefd"
+	],
+	"shortIdIndex": {
+		"G1": "9fcfb892-37ae-477e-a133-530b729caefd",
+		"O1.1": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
+		"O1.2": "9a0c8983-d975-4868-b59c-65a38eaa6779",
+		"A1.1.1": "de7a9a8d-4e2f-4df3-9bf1-d10222509096"
+	},
+	"rootMaxChildIndex": 1
+}
