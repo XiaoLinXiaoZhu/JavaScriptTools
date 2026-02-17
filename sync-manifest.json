@@ -37,7 +37,7 @@
     "category": "bilibili",
     "distPath": "bilibili/bilibili-block.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js",
-    "version": "2.8",
+    "version": "2.9",
     "greasyforkId": 467384,
     "greasyforkUrl": "https://greasyfork.org/scripts/467384"
   },
