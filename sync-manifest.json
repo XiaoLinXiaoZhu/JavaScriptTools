@@ -1,0 +1,74 @@
+[
+  {
+    "name": "asmr-download",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/asmr-download.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/asmr-download.user.js",
+    "version": "0.1"
+  },
+  {
+    "name": "autoclick",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/autoclick.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js",
+    "version": "0.4"
+  },
+  {
+    "name": "bahamut-auto",
+    "mode": "userscript",
+    "category": "entertainment",
+    "distPath": "entertainment/bahamut-auto.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js",
+    "version": "2.0"
+  },
+  {
+    "name": "better-iwara",
+    "mode": "userscript",
+    "category": "entertainment",
+    "distPath": "entertainment/better-iwara.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/better-iwara.user.js",
+    "version": "0.1"
+  },
+  {
+    "name": "bilibili-block",
+    "mode": "userscript",
+    "category": "bilibili",
+    "distPath": "bilibili/bilibili-block.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js",
+    "version": "2.8",
+    "greasyforkId": 467384,
+    "greasyforkUrl": "https://greasyfork.org/scripts/467384"
+  },
+  {
+    "name": "evaluation-auto",
+    "mode": "userscript",
+    "category": "campus",
+    "distPath": "campus/evaluation-auto.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js",
+    "version": "1.0"
+  },
+  {
+    "name": "hexo-image-redirect",
+    "mode": "node",
+    "category": "hexo",
+    "distPath": "hexo/hexo-image-redirect.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/hexo/hexo-image-redirect.js"
+  },
+  {
+    "name": "hust-autofill",
+    "mode": "userscript",
+    "category": "campus",
+    "distPath": "campus/hust-autofill.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js",
+    "version": "0.1"
+  },
+  {
+    "name": "obsidian-cardview",
+    "mode": "plain",
+    "category": "obsidian",
+    "distPath": "obsidian/cardview.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/obsidian/cardview.js"
+  }
+]
