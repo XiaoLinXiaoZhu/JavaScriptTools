@@ -181,5 +181,3 @@ new AutoDownload(
   }
 ).tryDownloadAsync(1000, -1);
 
-// 导出以避免 unused 警告
-void openURL;

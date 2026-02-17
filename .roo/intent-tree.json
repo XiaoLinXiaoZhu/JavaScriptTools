@@ -10,7 +10,8 @@
 			"parentId": null,
 			"childrenIds": [
 				"d4dc577a-4604-4dbb-b024-27342f8c09e2",
-				"9a0c8983-d975-4868-b59c-65a38eaa6779"
+				"9a0c8983-d975-4868-b59c-65a38eaa6779",
+				"58d75c26-af08-4171-bce4-f2a2da01765c"
 			],
 			"codeBindings": [],
 			"createdBy": {
@@ -20,7 +21,7 @@
 			},
 			"modifiedBy": [],
 			"assumption": "用户明确要求统一仓库模式：每个脚本一个文件夹，TS 源码，构建输出单一 JS 文件。这是一个全新的目标。",
-			"maxChildIndex": 2
+			"maxChildIndex": 3
 		},
 		"d4dc577a-4604-4dbb-b024-27342f8c09e2": {
 			"id": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
@@ -103,6 +104,65 @@
 				}
 			],
 			"assumption": "使用 esbuild 是专家推荐的最佳方案，适合油猴脚本的 IIFE 输出和可读性要求。"
+		},
+		"58d75c26-af08-4171-bce4-f2a2da01765c": {
+			"id": "58d75c26-af08-4171-bce4-f2a2da01765c",
+			"shortId": "I1.3",
+			"type": "impl",
+			"content": "feat: 统一仓库为 TypeScript monorepo 模式\n\n- 新增 esbuild 构建系统 (scripts/build.ts)\n- 新增 shared 类型定义和 defineConfig 辅助函数\n- 迁移 7 个油猴脚本到 src/ 下的 TS 文件夹结构\n- 每个脚本包含 meta.ts (配置) + index.ts (逻辑)\n- 构建输出到 dist/{category}/xxx.user.js\n- 支持 watch 模式 (npm run build:watch)\n- TypeScript 类型检查通过 (npm run typecheck)",
+			"status": "done",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [],
+			"codeBindings": [
+				{
+					"commitHash": "5fb267cbc1a02b102b88228a6e354f6a222473bd",
+					"commitMessage": "[intent:G1] feat: 统一仓库为 TypeScript monorepo 模式\n\n- 新增 esbuild 构建系统 (scripts/build.ts)\n- 新增 shared 类型定义和 defineConfig 辅助函数\n- 迁移 7 个油猴脚本到 src/ 下的 TS 文件夹结构\n- 每个脚本包含 meta.ts (配置) + index.ts (逻辑)\n- 构建输出到 dist/{category}/xxx.user.js\n- 支持 watch 模式 (npm run build:watch)\n- TypeScript 类型检查通过 (npm run typecheck)",
+					"files": [
+						".gitignore",
+						".roo/intent-tree.json",
+						"package-lock.json",
+						"package.json",
+						"scripts/build.ts",
+						"src/asmr-download/index.ts",
+						"src/asmr-download/meta.ts",
+						"src/autoclick/index.ts",
+						"src/autoclick/meta.ts",
+						"src/bahamut-auto/index.ts",
+						"src/bahamut-auto/meta.ts",
+						"src/better-iwara/index.ts",
+						"src/better-iwara/meta.ts",
+						"src/bilibili-block/index.ts",
+						"src/bilibili-block/meta.ts",
+						"src/evaluation-auto/index.ts",
+						"src/evaluation-auto/meta.ts",
+						"src/hust-autofill/index.ts",
+						"src/hust-autofill/meta.ts",
+						"src/shared/define.ts",
+						"src/shared/index.ts",
+						"src/shared/types.ts",
+						"tsconfig.json"
+					],
+					"diffSummary": "23 file(s), +2875 -0",
+					"timestamp": "2026-02-17T13:32:29.100Z"
+				}
+			],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:32:29.100Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:32:29.100Z",
+					"action": "bound commit 5fb267c"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:32:29.100Z",
+					"action": "updated: status→done"
+				}
+			]
 		}
 	},
 	"rootIds": [
@@ -112,7 +172,8 @@
 		"G1": "9fcfb892-37ae-477e-a133-530b729caefd",
 		"O1.1": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
 		"O1.2": "9a0c8983-d975-4868-b59c-65a38eaa6779",
-		"A1.1.1": "de7a9a8d-4e2f-4df3-9bf1-d10222509096"
+		"A1.1.1": "de7a9a8d-4e2f-4df3-9bf1-d10222509096",
+		"I1.3": "58d75c26-af08-4171-bce4-f2a2da01765c"
 	},
 	"rootMaxChildIndex": 1
 }

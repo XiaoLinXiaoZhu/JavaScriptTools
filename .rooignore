@@ -1,0 +1,5 @@
+# Auto-generated from .gitignore — adjust as needed.
+# This controls which files the AI cannot access.
+node_modules/
+dist/
+*.meta.tmp.mjs
