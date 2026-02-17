@@ -9,6 +9,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
+      - '.github/workflows/**'
 
   # 允许手动触发
   workflow_dispatch:
