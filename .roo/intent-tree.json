@@ -12,7 +12,9 @@
 				"d4dc577a-4604-4dbb-b024-27342f8c09e2",
 				"9a0c8983-d975-4868-b59c-65a38eaa6779",
 				"58d75c26-af08-4171-bce4-f2a2da01765c",
-				"44570a55-355b-45dd-90e8-2e4b92ad9246"
+				"44570a55-355b-45dd-90e8-2e4b92ad9246",
+				"94fde7ec-d937-44f9-9176-3327b82f874f",
+				"a401200a-d3d3-4609-97fe-e7ce0af87404"
 			],
 			"codeBindings": [],
 			"createdBy": {
@@ -22,7 +24,7 @@
 			},
 			"modifiedBy": [],
 			"assumption": "用户明确要求统一仓库模式：每个脚本一个文件夹，TS 源码，构建输出单一 JS 文件。这是一个全新的目标。",
-			"maxChildIndex": 4
+			"maxChildIndex": 6
 		},
 		"d4dc577a-4604-4dbb-b024-27342f8c09e2": {
 			"id": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
@@ -203,6 +205,84 @@
 					"action": "updated: status→done"
 				}
 			]
+		},
+		"94fde7ec-d937-44f9-9176-3327b82f874f": {
+			"id": "94fde7ec-d937-44f9-9176-3327b82f874f",
+			"shortId": "I1.5",
+			"type": "impl",
+			"content": "chore: 完善 .gitignore，移除不应跟踪的文件\n\n- 添加 .DS_Store、IDE、二进制/压缩包等忽略规则\n- 从 git 索引移除 hexo-image-redirect/node_modules/\n- 从 git 索引移除 .exe、.zip、package-lock.json",
+			"status": "done",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [],
+			"codeBindings": [
+				{
+					"commitHash": "4850447f1758f4073adaebc793fc0d9f742571e2",
+					"commitMessage": "[intent:G1] chore: 完善 .gitignore，移除不应跟踪的文件\n\n- 添加 .DS_Store、IDE、二进制/压缩包等忽略规则\n- 从 git 索引移除 hexo-image-redirect/node_modules/\n- 从 git 索引移除 .exe、.zip、package-lock.json",
+					"files": [
+						".gitignore",
+						".roo/intent-tree.json",
+						"\"ASMR/\\346\\227\\245\\346\\226\\207\\344\\271\\261\\347\\240\\201\\345\\244\\204\\347\\220\\206\\350\\275\\257\\344\\273\\266.exe\"",
+						"hexo-image-redirect.zip",
+						"hexo-image-redirect/node_modules/entities/.travis.yml",
+						"hexo-image-redirect/node_modules/entities/LICENSE",
+						"hexo-image-redirect/node_modules/entities/index.js",
+						"hexo-image-redirect/node_modules/entities/lib/decode.js",
+						"hexo-image-redirect/node_modules/entities/lib/decode_codepoint.js",
+						"hexo-image-redirect/node_modules/entities/lib/encode.js",
+						"hexo-image-redirect/node_modules/entities/maps/decode.json",
+						"hexo-image-redirect/node_modules/entities/maps/entities.json",
+						"hexo-image-redirect/node_modules/entities/maps/legacy.json",
+						"hexo-image-redirect/node_modules/entities/maps/xml.json",
+						"hexo-image-redirect/node_modules/entities/package.json",
+						"hexo-image-redirect/node_modules/entities/readme.md",
+						"hexo-image-redirect/node_modules/entities/test/mocha.opts",
+						"hexo-image-redirect/node_modules/entities/test/test.js",
+						"package-lock.json"
+					],
+					"diffSummary": "19 file(s), +76 -1572",
+					"timestamp": "2026-02-17T13:43:54.947Z"
+				}
+			],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:43:54.947Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:43:54.948Z",
+					"action": "bound commit 4850447"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:43:54.948Z",
+					"action": "updated: status→done"
+				}
+			]
+		},
+		"a401200a-d3d3-4609-97fe-e7ce0af87404": {
+			"id": "a401200a-d3d3-4609-97fe-e7ce0af87404",
+			"shortId": "O1.6",
+			"type": "objective",
+			"content": "清理旧版根目录 JS 文件，扩展构建系统支持 plain/node 模式，迁移 Obsidian 和 hexo 项目",
+			"status": "in_progress",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:55:04.755Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:55:13.476Z",
+					"action": "updated: content, status→in_progress"
+				}
+			],
+			"assumption": "用户要求清理旧脚本和扩展构建系统支持非 Greasyfork 模式，属于 G1 的延续。"
 		}
 	},
 	"rootIds": [
@@ -214,7 +294,9 @@
 		"O1.2": "9a0c8983-d975-4868-b59c-65a38eaa6779",
 		"A1.1.1": "de7a9a8d-4e2f-4df3-9bf1-d10222509096",
 		"I1.3": "58d75c26-af08-4171-bce4-f2a2da01765c",
-		"I1.4": "44570a55-355b-45dd-90e8-2e4b92ad9246"
+		"I1.4": "44570a55-355b-45dd-90e8-2e4b92ad9246",
+		"I1.5": "94fde7ec-d937-44f9-9176-3327b82f874f",
+		"O1.6": "a401200a-d3d3-4609-97fe-e7ce0af87404"
 	},
 	"rootMaxChildIndex": 1
 }

@@ -1,3 +1,19 @@
+export {};
+
+// Obsidian Dataview 环境全局变量
+declare const dv: {
+  container: HTMLElement;
+  paragraph: (text: string) => void;
+};
+declare const app: {
+  vault: {
+    config: { attachmentFolderPath?: string };
+    getAbstractFileByPath: (path: string) => unknown | null;
+    cachedRead: (file: unknown) => Promise<string>;
+    getResourcePath: (file: unknown) => string;
+  };
+};
+
 // 内联CSS样式
 const css = `
 <style>
@@ -145,91 +161,131 @@ const css = `
 </style>
 `;
 
+interface CardData {
+  title: string;
+  tags: string[];
+  category: string | null;
+  content: string;
+  visible: boolean;
+}
+
+interface CardState {
+  categoryFilter: string | null;
+  tagFilters: Set<string>;
+  columns: number;
+  groupByCategory: boolean;
+}
+
 class CardSystem {
+  state: CardState;
+  fileName: string;
+  dbFile: unknown;
+  rawContent!: string;
+  cards!: CardData[];
+
   constructor() {
     this.state = {
       categoryFilter: null,
       tagFilters: new Set(),
       columns: 3,
-      groupByCategory: false
+      groupByCategory: false,
     };
+    this.fileName = 'AllItems.md';
+    this.dbFile = null;
   }
 
-  setFileName(fileName) {
+  setFileName(fileName: string): this {
     this.fileName = fileName;
     return this;
   }
 
-  fileName = "AllItems.md";
-  async init() {
+  async init(): Promise<void> {
     this.dbFile = app.vault.getAbstractFileByPath(this.fileName);
     if (!this.dbFile) {
-      dv.paragraph("❌ 数据库文件未找到");
+      dv.paragraph('❌ 数据库文件未找到');
       return;
     }
-    
+
     try {
       this.rawContent = await app.vault.cachedRead(this.dbFile);
       this.cards = this.parseCards();
       this.update();
     } catch (error) {
-      dv.paragraph(`❌ 读取文件失败: ${error.message}`);
+      dv.paragraph(`❌ 读取文件失败: ${(error as Error).message}`);
     }
   }
 
-  parseCards() {
-    return this.rawContent.split(/^## /gm).slice(1).map(section => {
-      const lines = section.split('\n');
-      const header = lines[0].trim();
-      const metadata = { tags: [], category: null };
-      let contentLines = [];
+  parseCards(): CardData[] {
+    return this.rawContent
+      .split(/^## /gm)
+      .slice(1)
+      .map((section) => {
+        const lines = section.split('\n');
+        const header = lines[0].trim();
+        const metadata: { tags: string[]; category: string | null } = {
+          tags: [],
+          category: null,
+        };
+        const contentLines: string[] = [];
 
-      lines.slice(1).forEach(line => {
-        if (line.startsWith('tags::')) {
-          metadata.tags = line.replace('tags::', '').trim().split(/,\s*/);
-        } else if (line.startsWith('category::')) {
-          metadata.category = line.replace('category::', '').trim();
-        } else if (line.trim()) {
-          contentLines.push(line);
-        }
+        lines.slice(1).forEach((line) => {
+          if (line.startsWith('tags::')) {
+            metadata.tags = line
+              .replace('tags::', '')
+              .trim()
+              .split(/,\s*/);
+          } else if (line.startsWith('category::')) {
+            metadata.category = line.replace('category::', '').trim();
+          } else if (line.trim()) {
+            contentLines.push(line);
+          }
+        });
+
+        return {
+          title: header,
+          ...metadata,
+          content: this.renderMarkdown(contentLines.join('\n')),
+          visible: true,
+        };
       });
-
-      return {
-        title: header,
-        ...metadata,
-        content: this.renderMarkdown(contentLines.join('\n')),
-        visible: true
-      };
-    });
   }
 
-  renderMarkdown(content) {
+  renderMarkdown(content: string): string {
     return content
-      .replace(/^#(#+) (.*)$/gm, (_, level, text) => `<h${level.length + 1}>${text}</h${level.length + 1}>`)
+      .replace(
+        /^#(#+) (.*)$/gm,
+        (_, level: string, text: string) =>
+          `<h${level.length + 1}>${text}</h${level.length + 1}>`
+      )
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/!\[\[(.*?)\]\]/g, (_, img) => this.resolveImage(img))
-      .replace(/\[\[(.*?)\]\]/g, '<a href="#$1" class="internal-link">$1</a>')
+      .replace(/!\[\[(.*?)\]\]/g, (_, img: string) =>
+        this.resolveImage(img)
+      )
+      .replace(
+        /\[\[(.*?)\]\]/g,
+        '<a href="#$1" class="internal-link">$1</a>'
+      )
       .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
       .replace(/`([^`]+)`/g, '<code>$1</code>')
       .replace(/([^\n]+)\n/g, '<p>$1</p>');
   }
 
-  resolveImage(filename) {
-    const path = this.getImagePath(filename);
-    return path 
-      ? `<img src="${path}" alt="${filename}" class="obs-image" onerror="this.classList.add('image-error')">`
+  resolveImage(filename: string): string {
+    const imgPath = this.getImagePath(filename);
+    return imgPath
+      ? `<img src="${imgPath}" alt="${filename}" class="obs-image" onerror="this.classList.add('image-error')">`
       : `<div class="image-error">图片未找到: ${filename}</div>`;
   }
 
-  getImagePath(filename) {
+  getImagePath(filename: string): string | null {
     const folders = [
       app.vault.config.attachmentFolderPath || '',
       'Attachments/',
       'Assets/',
-      ''
+      '',
     ];
-    
+
     for (const folder of folders) {
       const fullPath = folder ? `${folder}/${filename}` : filename;
       const file = app.vault.getAbstractFileByPath(fullPath);
@@ -238,46 +294,59 @@ class CardSystem {
     return null;
   }
 
-  applyFilters() {
-    this.cards.forEach(card => {
-      const tagMatch = this.state.tagFilters.size === 0 || 
-        card.tags.some(t => this.state.tagFilters.has(t));
-      
-      const categoryMatch = !this.state.categoryFilter || 
+  applyFilters(): void {
+    this.cards.forEach((card) => {
+      const tagMatch =
+        this.state.tagFilters.size === 0 ||
+        card.tags.some((t) => this.state.tagFilters.has(t));
+
+      const categoryMatch =
+        !this.state.categoryFilter ||
         card.category === this.state.categoryFilter;
-      
+
       card.visible = tagMatch && categoryMatch;
     });
   }
 
-  renderToolbar() {
-    const categories = [...new Set(this.cards.map(c => c.category))].filter(Boolean);
-    const allTags = [...new Set(this.cards.flatMap(c => c.tags))].filter(Boolean);
-    
+  renderToolbar(): string {
+    const categories = [
+      ...new Set(this.cards.map((c) => c.category)),
+    ].filter(Boolean);
+    const allTags = [
+      ...new Set(this.cards.flatMap((c) => c.tags)),
+    ].filter(Boolean);
+
     return `
       <div class="toolbar">
         <div class="filter-group">
           <label>分类筛选：</label>
-          <select class="category-select" 
+          <select class="category-select"
             onchange="cardSystem.state.categoryFilter = this.value === '' ? null : this.value; cardSystem.update()">
             <option value="">全部</option>
-            ${categories.map(c => `
-              <option value="${c}" ${this.state.categoryFilter === c ? 'selected' : ''}>${c}</option>
-            `).join('')}
+            ${categories
+              .map(
+                (c) =>
+                  `<option value="${c}" ${this.state.categoryFilter === c ? 'selected' : ''}>${c}</option>`
+              )
+              .join('')}
           </select>
         </div>
 
         <div class="filter-group">
           <label>标签筛选：</label>
           <div class="multiselect">
-            ${allTags.map(tag => `
+            ${allTags
+              .map(
+                (tag) => `
               <label style="display: block;">
-                <input type="checkbox" value="${tag}" 
+                <input type="checkbox" value="${tag}"
                   ${this.state.tagFilters.has(tag) ? 'checked' : ''}
                   onchange="cardSystem.toggleTag('${tag.replace(/'/g, "\\'")}')">
                 ${tag}
               </label>
-            `).join('')}
+            `
+              )
+              .join('')}
           </div>
         </div>
 
@@ -298,77 +367,84 @@ class CardSystem {
     `;
   }
 
-  renderCards() {
+  renderCards(): string {
     this.applyFilters();
-    const visibleCards = this.cards.filter(c => c.visible);
+    const visibleCards = this.cards.filter((c) => c.visible);
 
     if (this.state.groupByCategory) {
-      const grouped = visibleCards.reduce((acc, card) => {
-        const key = card.category || '未分类';
-        acc[key] = acc[key] || [];
-        acc[key].push(card);
-        return acc;
-      }, {});
+      const grouped = visibleCards.reduce(
+        (acc, card) => {
+          const key = card.category || '未分类';
+          acc[key] = acc[key] || [];
+          acc[key].push(card);
+          return acc;
+        },
+        {} as Record<string, CardData[]>
+      );
 
       return `
         <div class="category-columns">
-          ${Object.entries(grouped).map(([category, cards]) => `
+          ${Object.entries(grouped)
+            .map(
+              ([category, cards]) => `
             <div class="category-column">
               <div class="category-title">${category}</div>
-              ${cards.map(c => this.renderCard(c)).join('')}
+              ${cards.map((c) => this.renderCard(c)).join('')}
             </div>
-          `).join('')}
+          `
+            )
+            .join('')}
         </div>
       `;
     }
 
     return `
       <div class="card-container" style="--column-count: ${this.state.columns}">
-        ${visibleCards.map(c => this.renderCard(c)).join('')}
+        ${visibleCards.map((c) => this.renderCard(c)).join('')}
       </div>
     `;
   }
 
-  renderCard(card) {
+  renderCard(card: CardData): string {
     return `
       <div class="obs-card" style="${card.visible ? '' : 'display: none;'}">
         <div class="card-title">${card.title}</div>
         <div class="meta-line">
           ${card.category ? `<span class="category-badge">${card.category}</span>` : ''}
-          ${card.tags.map(t => `<span class="tag-item">${t}</span>`).join('')}
+          ${card.tags.map((t) => `<span class="tag-item">${t}</span>`).join('')}
         </div>
         <div class="card-content">${card.content}</div>
       </div>
     `;
   }
 
-  toggleTag(tag) {
-    this.state.tagFilters.has(tag) 
+  toggleTag(tag: string): void {
+    this.state.tagFilters.has(tag)
       ? this.state.tagFilters.delete(tag)
       : this.state.tagFilters.add(tag);
     this.update();
   }
 
-  resetFilters() {
+  resetFilters(): void {
     this.state = {
       categoryFilter: null,
       tagFilters: new Set(),
       columns: 3,
-      groupByCategory: false
+      groupByCategory: false,
     };
     this.update();
   }
 
-  update() {
+  update(): void {
     dv.container.innerHTML = css + this.renderToolbar() + this.renderCards();
     this.bindEvents();
   }
 
-  bindEvents() {
-    dv.container.querySelectorAll('.internal-link').forEach(link => {
-      link.onclick = e => {
+  bindEvents(): void {
+    dv.container.querySelectorAll('.internal-link').forEach((link) => {
+      (link as HTMLElement).onclick = (e) => {
         e.preventDefault();
-        location.hash = e.target.textContent;
+        location.hash = (e.target as HTMLElement).textContent || '';
         window.dispatchEvent(new Event('hashchange'));
       };
     });
@@ -376,7 +452,8 @@ class CardSystem {
 }
 
 // 初始化卡片系统
-// const cardSystem = new CardSystem();
-// cardSystem.init();
-window.cardSystem = new CardSystem();
-window.cardSystem.setFileName("testAllItems.md").init();
+(window as unknown as Record<string, unknown>).cardSystem =
+  new CardSystem();
+(
+  (window as unknown as Record<string, { setFileName: (n: string) => { init: () => void } }>).cardSystem
+).setFileName('testAllItems.md').init();

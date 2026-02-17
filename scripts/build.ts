@@ -2,7 +2,13 @@ import * as esbuild from 'esbuild';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import type { ScriptConfig, UserScriptMeta } from '../src/shared/types';
+import type {
+  ScriptConfig,
+  UserScriptConfig,
+  PlainScriptConfig,
+  NodeScriptConfig,
+  UserScriptMeta,
+} from '../src/shared/types';
 
 const SRC_DIR = path.resolve(import.meta.dirname, '..', 'src');
 const DIST_DIR = path.resolve(import.meta.dirname, '..', 'dist');
@@ -18,7 +24,6 @@ function generateHeader(meta: UserScriptMeta): string {
     lines.push(`// ${padded} ${value}`);
   };
 
-  // 按照 Tampermonkey 推荐的字段顺序输出
   const fieldOrder: (keyof UserScriptMeta)[] = [
     'name',
     'namespace',
@@ -47,7 +52,6 @@ function generateHeader(meta: UserScriptMeta): string {
       continue;
     }
 
-    // 多语言字段 (name, description)
     if (typeof value === 'object' && !Array.isArray(value)) {
       const record = value as Record<string, string>;
       for (const [locale, text] of Object.entries(record)) {
@@ -57,7 +61,6 @@ function generateHeader(meta: UserScriptMeta): string {
       continue;
     }
 
-    // 数组字段 (match, grant, require, etc.)
     if (Array.isArray(value)) {
       for (const item of value) {
         addField(key as string, String(item));
@@ -65,11 +68,9 @@ function generateHeader(meta: UserScriptMeta): string {
       continue;
     }
 
-    // 普通字符串字段
     addField(key as string, String(value));
   }
 
-  // 输出未在 fieldOrder 中的自定义字段
   const knownKeys = new Set([...fieldOrder, 'name', 'description']);
   for (const [key, value] of Object.entries(meta)) {
     if (knownKeys.has(key as keyof UserScriptMeta)) continue;
@@ -112,7 +113,6 @@ async function discoverScripts(): Promise<ScriptEntry[]> {
       continue;
     }
 
-    // 用 esbuild 转译 meta.ts 然后动态 import
     const config = await loadMetaConfig(metaFile);
     entries.push({
       name: dirent.name,
@@ -125,7 +125,6 @@ async function discoverScripts(): Promise<ScriptEntry[]> {
 }
 
 async function loadMetaConfig(metaFile: string): Promise<ScriptConfig> {
-  // 用 esbuild 将 meta.ts 转译为临时 JS 文件
   const result = await esbuild.build({
     entryPoints: [metaFile],
     bundle: true,
@@ -136,8 +135,6 @@ async function loadMetaConfig(metaFile: string): Promise<ScriptConfig> {
   });
 
   const code = result.outputFiles[0].text;
-
-  // 写入临时文件并动态 import
   const tmpFile = metaFile.replace(/\.ts$/, '.meta.tmp.mjs');
   fs.writeFileSync(tmpFile, code);
   try {
@@ -148,10 +145,28 @@ async function loadMetaConfig(metaFile: string): Promise<ScriptConfig> {
   }
 }
 
-// ─── 构建单个脚本 ─────────────────────────────────────────────
+// ─── 构建分发 ─────────────────────────────────────────────────
 
 async function buildScript(entry: ScriptEntry): Promise<void> {
-  const { name, dir, config } = entry;
+  const mode = entry.config.mode ?? 'userscript';
+
+  switch (mode) {
+    case 'userscript':
+      return buildUserScript(entry);
+    case 'plain':
+      return buildPlainScript(entry);
+    case 'node':
+      return buildNodeScript(entry);
+    default:
+      throw new Error(`未知的构建模式: ${mode}`);
+  }
+}
+
+// ─── 油猴脚本构建 ─────────────────────────────────────────────
+
+async function buildUserScript(entry: ScriptEntry): Promise<void> {
+  const { name, dir, config: rawConfig } = entry;
+  const config = rawConfig as UserScriptConfig;
   const entryFile = path.join(dir, config.entry ?? 'index.ts');
   const outputName = config.outputName ?? name;
   const outputDir = path.join(DIST_DIR, config.category);
@@ -173,27 +188,111 @@ async function buildScript(entry: ScriptEntry): Promise<void> {
     outfile: outputFile,
     minify: false,
     keepNames: true,
-    banner: {
-      js: header + '\n',
-    },
-    // 处理 CSS 导入：内联为字符串
-    loader: {
-      '.css': 'text',
-    },
-    // 路径别名
-    alias: {
-      '@shared': path.join(SRC_DIR, 'shared'),
-    },
-    // 不打包外部依赖（通过 @require 引入的）
-    // external: [],
+    banner: { js: header + '\n' },
+    loader: { '.css': 'text' },
+    alias: { '@shared': path.join(SRC_DIR, 'shared') },
   });
 
   console.log(`  ✅ ${name} → dist/${config.category}/${outputName}.user.js`);
 }
 
+// ─── 纯 JS 构建 ──────────────────────────────────────────────
+
+async function buildPlainScript(entry: ScriptEntry): Promise<void> {
+  const { name, dir, config: rawConfig } = entry;
+  const config = rawConfig as PlainScriptConfig;
+  const entryFile = path.join(dir, config.entry ?? 'index.ts');
+  const outputName = config.outputName ?? name;
+  const format = config.format ?? 'iife';
+  const platform = config.platform ?? 'browser';
+  const outputDir = path.join(DIST_DIR, config.category);
+  const ext = format === 'esm' ? '.mjs' : '.js';
+  const outputFile = path.join(outputDir, `${outputName}${ext}`);
+
+  if (!fs.existsSync(entryFile)) {
+    console.error(`  ❌ ${name}: 入口文件不存在 ${entryFile}`);
+    return;
+  }
+
+  await esbuild.build({
+    entryPoints: [entryFile],
+    bundle: true,
+    format,
+    platform,
+    target: 'es2020',
+    outfile: outputFile,
+    minify: false,
+    keepNames: true,
+    loader: { '.css': 'text' },
+    alias: { '@shared': path.join(SRC_DIR, 'shared') },
+  });
+
+  console.log(`  ✅ ${name} → dist/${config.category}/${outputName}${ext}`);
+}
+
+// ─── Node.js 模块构建 ────────────────────────────────────────
+
+async function buildNodeScript(entry: ScriptEntry): Promise<void> {
+  const { name, dir, config: rawConfig } = entry;
+  const config = rawConfig as NodeScriptConfig;
+  const entryFile = path.join(dir, config.entry ?? 'index.ts');
+  const outputName = config.outputName ?? name;
+  const format = config.format ?? 'cjs';
+  const outputDir = path.join(DIST_DIR, config.category);
+  const ext = format === 'esm' ? '.mjs' : '.js';
+  const outputFile = path.join(outputDir, `${outputName}${ext}`);
+
+  if (!fs.existsSync(entryFile)) {
+    console.error(`  ❌ ${name}: 入口文件不存在 ${entryFile}`);
+    return;
+  }
+
+  const external = resolveExternals(dir, config.external);
+
+  await esbuild.build({
+    entryPoints: [entryFile],
+    bundle: true,
+    format,
+    platform: 'node',
+    target: 'node16',
+    outfile: outputFile,
+    minify: false,
+    keepNames: true,
+    external,
+    alias: { '@shared': path.join(SRC_DIR, 'shared') },
+  });
+
+  // 如果脚本目录有 package.json，复制到输出目录
+  const srcPkg = path.join(dir, 'package.json');
+  if (fs.existsSync(srcPkg)) {
+    fs.cpSync(srcPkg, path.join(outputDir, 'package.json'));
+  }
+
+  console.log(`  ✅ ${name} → dist/${config.category}/${outputName}${ext}`);
+}
+
+function resolveExternals(
+  scriptDir: string,
+  external?: true | string[]
+): string[] {
+  if (Array.isArray(external)) return external;
+
+  // 默认行为：从 package.json 读取 dependencies
+  const pkgPath = path.join(scriptDir, 'package.json');
+  if (!fs.existsSync(pkgPath)) {
+    return [];
+  }
+
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+  return [
+    ...Object.keys(pkg.dependencies ?? {}),
+    ...Object.keys(pkg.peerDependencies ?? {}),
+  ];
+}
+
 // ─── Watch 模式 ───────────────────────────────────────────────
 
-async function watchMode(entries: ScriptEntry[]): Promise<void> {
+async function watchMode(): Promise<void> {
   const { watch } = await import('chokidar');
 
   console.log('\n👀 Watch 模式已启动，监听 src/ 变化...\n');
@@ -205,12 +304,10 @@ async function watchMode(entries: ScriptEntry[]): Promise<void> {
 
   const rebuild = async () => {
     console.log('\n🔄 检测到变化，重新构建...\n');
-    // 重新扫描（可能有新脚本）
     const newEntries = await discoverScripts();
     await buildAll(newEntries);
   };
 
-  // 防抖
   let timer: ReturnType<typeof setTimeout> | null = null;
   watcher.on('all', () => {
     if (timer) clearTimeout(timer);
@@ -221,7 +318,6 @@ async function watchMode(entries: ScriptEntry[]): Promise<void> {
 // ─── 主流程 ───────────────────────────────────────────────────
 
 async function buildAll(entries: ScriptEntry[]): Promise<void> {
-  // 清理 dist
   if (fs.existsSync(DIST_DIR)) {
     fs.rmSync(DIST_DIR, { recursive: true });
   }
@@ -255,9 +351,8 @@ async function main(): Promise<void> {
 
   await buildAll(entries);
 
-  // --watch 参数
   if (process.argv.includes('--watch')) {
-    await watchMode(entries);
+    await watchMode();
   }
 }
 
