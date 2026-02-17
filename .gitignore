@@ -1,3 +1,34 @@
-node_modules/
+# ─── 构建产物 ───────────────────────────────
 dist/
 *.meta.tmp.mjs
+
+# ─── 依赖 ─────────────────────────────────────
+node_modules/
+package-lock.json
+
+# ─── 系统文件 ──────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── IDE / 编辑器 ─────────────────────────────
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ─── 二进制 / 压缩包 ──────────────────────────
+*.exe
+*.zip
+*.rar
+*.7z
+
+# ─── 旧版根目录脚本（已迁移到 src/）──────────
+# 如果确认不再需要，可取消注释以忽略
+# *.user.js
+# autoclick.js
+# 动画疯自动脚本.js
+# 屏蔽B站营销视频和推广视频.js

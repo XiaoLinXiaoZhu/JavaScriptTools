@@ -11,7 +11,8 @@
 			"childrenIds": [
 				"d4dc577a-4604-4dbb-b024-27342f8c09e2",
 				"9a0c8983-d975-4868-b59c-65a38eaa6779",
-				"58d75c26-af08-4171-bce4-f2a2da01765c"
+				"58d75c26-af08-4171-bce4-f2a2da01765c",
+				"44570a55-355b-45dd-90e8-2e4b92ad9246"
 			],
 			"codeBindings": [],
 			"createdBy": {
@@ -21,7 +22,7 @@
 			},
 			"modifiedBy": [],
 			"assumption": "用户明确要求统一仓库模式：每个脚本一个文件夹，TS 源码，构建输出单一 JS 文件。这是一个全新的目标。",
-			"maxChildIndex": 3
+			"maxChildIndex": 4
 		},
 		"d4dc577a-4604-4dbb-b024-27342f8c09e2": {
 			"id": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
@@ -163,6 +164,45 @@
 					"action": "updated: status→done"
 				}
 			]
+		},
+		"44570a55-355b-45dd-90e8-2e4b92ad9246": {
+			"id": "44570a55-355b-45dd-90e8-2e4b92ad9246",
+			"shortId": "I1.4",
+			"type": "impl",
+			"content": "chore: 移除 autoclick/index.ts 中未使用的 openURL 死代码引用",
+			"status": "done",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [],
+			"codeBindings": [
+				{
+					"commitHash": "47017d4726198a9e2770c5e44c827a328f4db013",
+					"commitMessage": "[intent:G1] chore: 移除 autoclick/index.ts 中未使用的 openURL 死代码引用",
+					"files": [
+						".roo/intent-tree.json",
+						".rooignore",
+						"src/autoclick/index.ts"
+					],
+					"diffSummary": "3 file(s), +69 -5",
+					"timestamp": "2026-02-17T13:41:25.538Z"
+				}
+			],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:41:25.538Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:41:25.538Z",
+					"action": "bound commit 47017d4"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:41:25.538Z",
+					"action": "updated: status→done"
+				}
+			]
 		}
 	},
 	"rootIds": [
@@ -173,7 +213,8 @@
 		"O1.1": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
 		"O1.2": "9a0c8983-d975-4868-b59c-65a38eaa6779",
 		"A1.1.1": "de7a9a8d-4e2f-4df3-9bf1-d10222509096",
-		"I1.3": "58d75c26-af08-4171-bce4-f2a2da01765c"
+		"I1.3": "58d75c26-af08-4171-bce4-f2a2da01765c",
+		"I1.4": "44570a55-355b-45dd-90e8-2e4b92ad9246"
 	},
 	"rootMaxChildIndex": 1
 }
