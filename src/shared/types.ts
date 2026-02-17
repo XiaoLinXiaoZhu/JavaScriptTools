@@ -39,6 +39,8 @@ interface ScriptConfigBase {
   outputName?: string;
   /** 入口文件路径（相对于脚本文件夹），默认 index.ts */
   entry?: string;
+  /** Greasyfork 脚本 ID，用于自动同步触发（仅 userscript 模式需要） */
+  greasyforkId?: number;
 }
 
 // ─── 油猴脚本模式（默认） ──────────────────────

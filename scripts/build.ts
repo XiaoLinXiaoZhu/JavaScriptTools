@@ -14,6 +14,10 @@ const SRC_DIR = path.resolve(import.meta.dirname, '..', 'src');
 const DIST_DIR = path.resolve(import.meta.dirname, '..', 'dist');
 const SKIP_DIRS = new Set(['shared']);
 
+// GitHub Pages base URL，用于自动注入 downloadURL/updateURL
+const PAGES_BASE_URL =
+  'https://xiaolinxiaozhu.github.io/JavaScriptTools';
+
 // ─── UserScript Header 生成 ───────────────────────────────────
 
 function generateHeader(meta: UserScriptMeta): string {
@@ -176,6 +180,11 @@ async function buildUserScript(entry: ScriptEntry): Promise<void> {
     console.error(`  ❌ ${name}: 入口文件不存在 ${entryFile}`);
     return;
   }
+
+  // 自动注入 downloadURL/updateURL（如果未手动指定）
+  const fileUrl = `${PAGES_BASE_URL}/${config.category}/${outputName}.user.js`;
+  config.meta.downloadURL ??= fileUrl;
+  config.meta.updateURL ??= fileUrl;
 
   const header = generateHeader(config.meta);
 

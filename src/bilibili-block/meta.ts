@@ -32,4 +32,5 @@ export default defineConfig({
       'https://update.greasyfork.org/scripts/467384/%F0%9F%9B%A0%EF%B8%8F%E5%B1%8F%E8%94%BDB%E7%AB%99%E8%90%A5%E9%94%80%E8%A7%86%E9%A2%91.meta.js',
   },
   category: 'bilibili',
+  greasyforkId: 467384,
 });

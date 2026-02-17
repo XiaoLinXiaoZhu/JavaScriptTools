@@ -14,7 +14,8 @@
 				"58d75c26-af08-4171-bce4-f2a2da01765c",
 				"44570a55-355b-45dd-90e8-2e4b92ad9246",
 				"94fde7ec-d937-44f9-9176-3327b82f874f",
-				"a401200a-d3d3-4609-97fe-e7ce0af87404"
+				"a401200a-d3d3-4609-97fe-e7ce0af87404",
+				"8a02e705-67eb-4539-8790-8a35d03bd5e7"
 			],
 			"codeBindings": [],
 			"createdBy": {
@@ -24,7 +25,7 @@
 			},
 			"modifiedBy": [],
 			"assumption": "用户明确要求统一仓库模式：每个脚本一个文件夹，TS 源码，构建输出单一 JS 文件。这是一个全新的目标。",
-			"maxChildIndex": 6
+			"maxChildIndex": 7
 		},
 		"d4dc577a-4604-4dbb-b024-27342f8c09e2": {
 			"id": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
@@ -268,7 +269,9 @@
 			"content": "清理旧版根目录 JS 文件，扩展构建系统支持 plain/node 模式，迁移 Obsidian 和 hexo 项目",
 			"status": "in_progress",
 			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
-			"childrenIds": [],
+			"childrenIds": [
+				"4a8fae30-29df-4b2f-b5d0-d76954b9ecce"
+			],
 			"codeBindings": [],
 			"createdBy": {
 				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
@@ -282,7 +285,88 @@
 					"action": "updated: content, status→in_progress"
 				}
 			],
-			"assumption": "用户要求清理旧脚本和扩展构建系统支持非 Greasyfork 模式，属于 G1 的延续。"
+			"assumption": "用户要求清理旧脚本和扩展构建系统支持非 Greasyfork 模式，属于 G1 的延续。",
+			"maxChildIndex": 1
+		},
+		"4a8fae30-29df-4b2f-b5d0-d76954b9ecce": {
+			"id": "4a8fae30-29df-4b2f-b5d0-d76954b9ecce",
+			"shortId": "I1.6.1",
+			"type": "impl",
+			"content": "feat: 清理旧文件，扩展构建系统支持 plain/node 模式，迁移 Obsidian 和 hexo 项目\n\n- 删除已迁移的旧版根目录 JS 文件和 betterIwara/\n- 删除旧版 Obsidian/ 和 hexo-image-redirect/ 目录\n- ScriptConfig 扩展为 discriminated union：userscript | plain | node\n- build.ts 按 mode 分发到不同构建函数\n- 新增 src/obsidian-cardview/（mode: plain，IIFE 无 header）\n- 新增 src/hexo-image-redirect/（mode: node，CJS + external cheerio）\n- 现有 7 个油猴脚本无需任何修改（向后兼容）",
+			"status": "done",
+			"parentId": "a401200a-d3d3-4609-97fe-e7ce0af87404",
+			"childrenIds": [],
+			"codeBindings": [
+				{
+					"commitHash": "aeff5111a436314c4c9b0edcc556be65e5b10649",
+					"commitMessage": "[intent:O1.6] feat: 清理旧文件，扩展构建系统支持 plain/node 模式，迁移 Obsidian 和 hexo 项目\n\n- 删除已迁移的旧版根目录 JS 文件和 betterIwara/\n- 删除旧版 Obsidian/ 和 hexo-image-redirect/ 目录\n- ScriptConfig 扩展为 discriminated union：userscript | plain | node\n- build.ts 按 mode 分发到不同构建函数\n- 新增 src/obsidian-cardview/（mode: plain，IIFE 无 header）\n- 新增 src/hexo-image-redirect/（mode: node，CJS + external cheerio）\n- 现有 7 个油猴脚本无需任何修改（向后兼容）",
+					"files": [
+						".gitignore",
+						".roo/intent-tree.json",
+						"AutoTool_DownloadASMR.user.js",
+						"\"HUST\\345\\215\\216\\344\\270\\255\\347\\247\\221\\346\\212\\200\\345\\244\\247\\345\\255\\246\\345\\206\\233\\347\\220\\206\\347\\272\\277\\344\\270\\212\\344\\275\\234\\344\\270\\232\\347\\256\\200\\346\\230\\223\\350\\207\\252\\345\\212\\250\\345\\241\\253\\345\\205\\205\\345\\212\\251\\346\\211\\213.user.js\"",
+						"Obsidian/old-cardview.js",
+						"autoclick.js",
+						"betterIwara/betterIwara.js",
+						"hexo-image-redirect/LICENSE",
+						"hexo-image-redirect/README.md",
+						"hexo-image-redirect/index.js",
+						"hexo-image-redirect/package.json",
+						"scripts/build.ts",
+						"src/hexo-image-redirect/index.ts",
+						"src/hexo-image-redirect/meta.ts",
+						"src/hexo-image-redirect/package.json",
+						"Obsidian/cardview.js => src/obsidian-cardview/index.ts",
+						"src/obsidian-cardview/meta.ts",
+						"src/shared/types.ts",
+						"\"\\345\\212\\250\\347\\224\\273\\347\\226\\257\\350\\207\\252\\345\\212\\250\\350\\204\\232\\346\\234\\254.js\"",
+						"\"\\345\\261\\217\\350\\224\\275B\\347\\253\\231\\350\\220\\245\\351\\224\\200\\350\\247\\206\\351\\242\\221\\345\\222\\214\\346\\216\\250\\345\\271\\277\\350\\247\\206\\351\\242\\221.js\"",
+						"\"\\350\\257\\204\\344\\273\\267\\350\\241\\250\\350\\207\\252\\345\\212\\250\\351\\200\\211\\346\\213\\251.user.js\""
+					],
+					"diffSummary": "21 file(s), +553 -1913",
+					"timestamp": "2026-02-17T13:58:44.119Z"
+				}
+			],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T13:58:44.119Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:58:44.119Z",
+					"action": "bound commit aeff511"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T13:58:44.119Z",
+					"action": "updated: status→done"
+				}
+			]
+		},
+		"8a02e705-67eb-4539-8790-8a35d03bd5e7": {
+			"id": "8a02e705-67eb-4539-8790-8a35d03bd5e7",
+			"shortId": "O1.7",
+			"type": "objective",
+			"content": "配置 GitHub Actions + GitHub Pages 实现油猴脚本自动发布到 Greasyfork",
+			"status": "in_progress",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T14:11:32.703Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T14:11:40.082Z",
+					"action": "updated: content, status→in_progress"
+				}
+			],
+			"assumption": "用户希望自动发布到 Greasyfork，这是 G1 的延伸目标。"
 		}
 	},
 	"rootIds": [
@@ -296,7 +380,9 @@
 		"I1.3": "58d75c26-af08-4171-bce4-f2a2da01765c",
 		"I1.4": "44570a55-355b-45dd-90e8-2e4b92ad9246",
 		"I1.5": "94fde7ec-d937-44f9-9176-3327b82f874f",
-		"O1.6": "a401200a-d3d3-4609-97fe-e7ce0af87404"
+		"O1.6": "a401200a-d3d3-4609-97fe-e7ce0af87404",
+		"I1.6.1": "4a8fae30-29df-4b2f-b5d0-d76954b9ecce",
+		"O1.7": "8a02e705-67eb-4539-8790-8a35d03bd5e7"
 	},
 	"rootMaxChildIndex": 1
 }
