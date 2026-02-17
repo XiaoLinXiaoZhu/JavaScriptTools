@@ -4,7 +4,7 @@
 // @name:zh-TW          屏蔽B站营销视频和推广视频
 // @name:en             Block Bilibili's marketing videos and promotional videos
 // @namespace           http://tampermonkey.net/
-// @version             2.9
+// @version             3.0
 // @description         屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-CN   屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-TW   遮罩部分B站（bilibili）主頁推薦的視頻卡片，遮罩up主粉絲少於一定數量的，遮罩直播與右側推廣，遮罩帶廣告標籤的
@@ -37,6 +37,13 @@
     "MIN_FOLLOWER",
     DEFAULT_MIN_FOLLOWER
   );
+  function addBlockUid(uid) {
+    if (FILTER_BLOCK_UIDS.includes(uid)) return false;
+    FILTER_BLOCK_UIDS.push(uid);
+    GM_setValue("FILTER_BLOCK_UIDS", FILTER_BLOCK_UIDS);
+    return true;
+  }
+  __name(addBlockUid, "addBlockUid");
   GM_registerMenuCommand("\u2699\uFE0F \u8BBE\u7F6E\u5C4F\u853DUID\u5217\u8868", () => {
     const current = FILTER_BLOCK_UIDS.join(", ");
     const input = prompt(
@@ -70,7 +77,9 @@
     alert(
       `\u5F53\u524D\u914D\u7F6E\uFF1A
 
-\u5C4F\u853DUID\u5217\u8868\uFF1A${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(", ") : "\uFF08\u7A7A\uFF09"}
+\u5C4F\u853DUID\u5217\u8868\uFF08${FILTER_BLOCK_UIDS.length} \u4E2A\uFF09\uFF1A
+${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(", ") : "\uFF08\u7A7A\uFF09"}
+
 \u6700\u4F4E\u7C89\u4E1D\u6570\uFF1A${MIN_FOLLOWER}`
     );
   });
@@ -97,6 +106,13 @@
     return -1;
   }
   __name(getUid, "getUid");
+  function getUpName(card) {
+    const nameEl = card.querySelector(
+      ".bili-video-card__info--author"
+    );
+    return nameEl?.textContent?.trim() ?? "\u672A\u77E5UP\u4E3B";
+  }
+  __name(getUpName, "getUpName");
   async function getFollower(uid) {
     const response = await fetch(`${API_USERDATA}${uid}`);
     logMessages += `\u{1F7E2}getFollower, uid: ${uid}
@@ -111,6 +127,21 @@
     }
   }
   __name(getFollower, "getFollower");
+  function removeCard(card) {
+    card.remove();
+  }
+  __name(removeCard, "removeCard");
+  function removeIfBlockByADBlocker(card) {
+    const cardContent = card.querySelector(".bili-video-card.is-rcmd");
+    if (!cardContent || cardContent.innerHTML.match(
+      /<!----><div class=".+?"><\/div><!---->/
+    )) {
+      removeCard(card);
+      return true;
+    }
+    return false;
+  }
+  __name(removeIfBlockByADBlocker, "removeIfBlockByADBlocker");
   async function editCards(card) {
     processedCards++;
     const uid = getUid(card);
@@ -139,21 +170,56 @@
     }
   }
   __name(editCards, "editCards");
-  function removeCard(card) {
-    card.remove();
+  var lastTriggeredCard = null;
+  document.addEventListener(
+    "click",
+    (e) => {
+      const card = e.target.closest(".bili-feed-card");
+      if (card) lastTriggeredCard = card;
+    },
+    true
+  );
+  function injectBlockOption(panel, popoverEl) {
+    if (panel.querySelector(".custom-block-up-option")) return;
+    const item = document.createElement("div");
+    item.className = "bili-video-card__info--no-interest-panel--item custom-block-up-option";
+    item.textContent = "\u{1F6AB} \u6C38\u4E45\u5C4F\u853D\u6B64UP\u4E3B";
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!lastTriggeredCard) {
+        console.warn("[bilibili-block] \u65E0\u6CD5\u5B9A\u4F4D\u89E6\u53D1\u5361\u7247");
+        return;
+      }
+      const uid = getUid(lastTriggeredCard);
+      if (uid === -1) return;
+      const upName = getUpName(lastTriggeredCard);
+      const added = addBlockUid(uid);
+      removeCard(lastTriggeredCard);
+      popoverEl.remove();
+      lastTriggeredCard = null;
+      logMessages += `\u{1F6AB} ${added ? "\u5DF2\u5C4F\u853D" : "\u5DF2\u5728\u5C4F\u853D\u5217\u8868\u4E2D"}: ${upName} (UID: ${uid})
+`;
+    });
+    panel.appendChild(item);
   }
-  __name(removeCard, "removeCard");
-  function removeIfBlockByADBlocker(card) {
-    const cardContent = card.querySelector(".bili-video-card.is-rcmd");
-    if (!cardContent || cardContent.innerHTML.match(
-      /<!----><div class=".+?"><\/div><!---->/
-    )) {
-      removeCard(card);
-      return true;
+  __name(injectBlockOption, "injectBlockOption");
+  var popoverObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of mutation.addedNodes) {
+        if (!(node instanceof HTMLElement)) continue;
+        if (!node.classList?.contains("vui_popover")) continue;
+        requestAnimationFrame(() => {
+          const panel = node.querySelector(
+            ".bili-video-card__info--no-interest-panel"
+          );
+          if (panel) {
+            injectBlockOption(panel, node);
+          }
+        });
+      }
     }
-    return false;
-  }
-  __name(removeIfBlockByADBlocker, "removeIfBlockByADBlocker");
+  });
+  popoverObserver.observe(document.body, { childList: true });
   var isProcessing = false;
   var observer = new IntersectionObserver(
     (entries, obs) => {
