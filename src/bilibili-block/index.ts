@@ -10,11 +10,9 @@ declare function GM_registerMenuCommand(
 
 // ─── 配置管理 ─────────────────────────────────────────────────
 
-// 默认值
 const DEFAULT_FILTER_BLOCK_UIDS = [113560378];
 const DEFAULT_MIN_FOLLOWER = 2000;
 
-// 从 GM 存储读取配置（首次使用时自动写入默认值）
 let FILTER_BLOCK_UIDS: number[] = GM_getValue(
   'FILTER_BLOCK_UIDS',
   DEFAULT_FILTER_BLOCK_UIDS
@@ -24,6 +22,14 @@ let MIN_FOLLOWER: number = GM_getValue(
   DEFAULT_MIN_FOLLOWER
 );
 
+/** 添加 UID 到屏蔽列表（去重 + 持久化） */
+function addBlockUid(uid: number): boolean {
+  if (FILTER_BLOCK_UIDS.includes(uid)) return false;
+  FILTER_BLOCK_UIDS.push(uid);
+  GM_setValue('FILTER_BLOCK_UIDS', FILTER_BLOCK_UIDS);
+  return true;
+}
+
 // ─── 配置菜单 ─────────────────────────────────────────────────
 
 GM_registerMenuCommand('⚙️ 设置屏蔽UID列表', () => {
@@ -32,7 +38,7 @@ GM_registerMenuCommand('⚙️ 设置屏蔽UID列表', () => {
     '请输入需要屏蔽的UID列表（多个UID用英文逗号分隔）：\n\n例如：113560378, 123456789',
     current
   );
-  if (input === null) return; // 用户取消
+  if (input === null) return;
 
   const parsed = input
     .split(',')
@@ -50,7 +56,7 @@ GM_registerMenuCommand('⚙️ 设置最低粉丝数', () => {
     '请输入最低粉丝数（低于此数量的UP主视频将被屏蔽）：',
     String(MIN_FOLLOWER)
   );
-  if (input === null) return; // 用户取消
+  if (input === null) return;
 
   const parsed = parseInt(input, 10);
   if (isNaN(parsed) || parsed < 0) {
@@ -66,22 +72,20 @@ GM_registerMenuCommand('⚙️ 设置最低粉丝数', () => {
 GM_registerMenuCommand('📋 查看当前配置', () => {
   alert(
     `当前配置：\n\n` +
-      `屏蔽UID列表：${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(', ') : '（空）'}\n` +
+      `屏蔽UID列表（${FILTER_BLOCK_UIDS.length} 个）：\n${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(', ') : '（空）'}\n\n` +
       `最低粉丝数：${MIN_FOLLOWER}`
   );
 });
 
-// ─── 脚本逻辑 ─────────────────────────────────────────────────
+// ─── 脚本常量 ─────────────────────────────────────────────────
 
-// 定义需要筛选屏蔽的视频卡片类名
 const FILTER_CLASSES = ['.bili-feed-card'];
-// 定义需要直接直接屏蔽的直播类名
 const FILTER_BLOCK_CLASSES = ['.floor-single-card'];
-// 定义接口前缀
 const API_USERDATA = 'https://api.bilibili.com/x/relation/stat?vmid=';
 
-// 定义已处理卡片数量
 let processedCards = 0;
+
+// ─── 工具函数 ─────────────────────────────────────────────────
 
 function getUid(card: Element): number {
   const ownerLink = card.querySelector(
@@ -89,7 +93,6 @@ function getUid(card: Element): number {
   ) as HTMLAnchorElement | null;
   if (ownerLink) {
     const uid = ownerLink.href.split('/').pop();
-
     if (uid && uid.match(/^\d+$/)) {
       return Number(uid);
     } else {
@@ -97,9 +100,16 @@ function getUid(card: Element): number {
       return -1;
     }
   }
-
   logMessages += `🟢remove becouse can't get ownerLink, processedCards: ${processedCards}, ownerLink: ${ownerLink}\n`;
   return -1;
+}
+
+/** 从卡片获取 UP 主名称（用于提示） */
+function getUpName(card: Element): string {
+  const nameEl = card.querySelector(
+    '.bili-video-card__info--author'
+  ) as HTMLElement | null;
+  return nameEl?.textContent?.trim() ?? '未知UP主';
 }
 
 async function getFollower(uid: number): Promise<number> {
@@ -113,6 +123,26 @@ async function getFollower(uid: number): Promise<number> {
     return -1;
   }
 }
+
+function removeCard(card: Element): void {
+  card.remove();
+}
+
+function removeIfBlockByADBlocker(card: Element): boolean {
+  const cardContent = card.querySelector('.bili-video-card.is-rcmd');
+  if (
+    !cardContent ||
+    cardContent.innerHTML.match(
+      /<!----><div class=".+?"><\/div><!---->/
+    )
+  ) {
+    removeCard(card);
+    return true;
+  }
+  return false;
+}
+
+// ─── 卡片过滤逻辑 ─────────────────────────────────────────────
 
 async function editCards(card: Element): Promise<void> {
   processedCards++;
@@ -141,27 +171,85 @@ async function editCards(card: Element): Promise<void> {
   }
 }
 
-function removeCard(card: Element): void {
-  card.remove();
+// ─── "不感兴趣"面板注入 ──────────────────────────────────────
+
+/** 最近一次触发 popover 的卡片 */
+let lastTriggeredCard: Element | null = null;
+
+// 捕获阶段监听点击，记录最后点击的 feed-card（用于关联 popover）
+document.addEventListener(
+  'click',
+  (e) => {
+    const card = (e.target as HTMLElement).closest('.bili-feed-card');
+    if (card) lastTriggeredCard = card;
+  },
+  true
+);
+
+/** 在"不感兴趣"面板中注入屏蔽选项 */
+function injectBlockOption(
+  panel: Element,
+  popoverEl: HTMLElement
+): void {
+  // 防止重复注入
+  if (panel.querySelector('.custom-block-up-option')) return;
+
+  const item = document.createElement('div');
+  item.className =
+    'bili-video-card__info--no-interest-panel--item custom-block-up-option';
+  item.textContent = '🚫 永久屏蔽此UP主';
+
+  item.addEventListener('click', (e) => {
+    e.stopPropagation();
+
+    if (!lastTriggeredCard) {
+      console.warn('[bilibili-block] 无法定位触发卡片');
+      return;
+    }
+
+    const uid = getUid(lastTriggeredCard);
+    if (uid === -1) return;
+
+    const upName = getUpName(lastTriggeredCard);
+    const added = addBlockUid(uid);
+
+    // 移除卡片 & 关闭 popover
+    removeCard(lastTriggeredCard);
+    popoverEl.remove();
+    lastTriggeredCard = null;
+
+    logMessages += `🚫 ${added ? '已屏蔽' : '已在屏蔽列表中'}: ${upName} (UID: ${uid})\n`;
+  });
+
+  panel.appendChild(item);
 }
 
-function removeIfBlockByADBlocker(card: Element): boolean {
-  const cardContent = card.querySelector('.bili-video-card.is-rcmd');
-  if (
-    !cardContent ||
-    cardContent.innerHTML.match(
-      /<!----><div class=".+?"><\/div><!---->/
-    )
-  ) {
-    removeCard(card);
-    return true;
+// 监听 body 直接子节点变化，检测 popover 出现
+const popoverObserver = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (!(node instanceof HTMLElement)) continue;
+      if (!node.classList?.contains('vui_popover')) continue;
+
+      // Vue 异步渲染，等待面板内容填充
+      requestAnimationFrame(() => {
+        const panel = node.querySelector(
+          '.bili-video-card__info--no-interest-panel'
+        );
+        if (panel) {
+          injectBlockOption(panel, node);
+        }
+      });
+    }
   }
-  return false;
-}
+});
+
+popoverObserver.observe(document.body, { childList: true });
+
+// ─── 卡片观察器 ───────────────────────────────────────────────
 
 let isProcessing = false;
 
-// 创建Intersection Observer实例
 const observer = new IntersectionObserver(
   (entries, obs) => {
     entries.forEach((entry) => {
@@ -205,7 +293,6 @@ const mutationObserver = new MutationObserver((mutations) => {
   isProcessing = false;
 });
 
-// 监控 class="container is-version8" 的元素
 const container = document.querySelector('.container.is-version8');
 if (container) {
   mutationObserver.observe(container, {
@@ -216,7 +303,8 @@ if (container) {
 // 页面加载完成后，立即执行一次
 observeNewCards();
 
-// 自定义 log 函数，每10s 输出一次debug
+// ─── 日志输出 ─────────────────────────────────────────────────
+
 let logMessages = '';
 setInterval(() => {
   if (logMessages === '') return;

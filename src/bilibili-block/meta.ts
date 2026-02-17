@@ -9,7 +9,7 @@ export default defineConfig({
       en: "Block Bilibili's marketing videos and promotional videos",
     },
     namespace: 'http://tampermonkey.net/',
-    version: '2.9',
+    version: '3.0',
     description: {
       '': '屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的',
       'zh-CN':
