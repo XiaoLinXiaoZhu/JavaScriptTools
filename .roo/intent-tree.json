@@ -15,7 +15,8 @@
 				"44570a55-355b-45dd-90e8-2e4b92ad9246",
 				"94fde7ec-d937-44f9-9176-3327b82f874f",
 				"a401200a-d3d3-4609-97fe-e7ce0af87404",
-				"8a02e705-67eb-4539-8790-8a35d03bd5e7"
+				"8a02e705-67eb-4539-8790-8a35d03bd5e7",
+				"5633576d-4952-4e5d-a1bc-23482e616ac8"
 			],
 			"codeBindings": [],
 			"createdBy": {
@@ -25,7 +26,7 @@
 			},
 			"modifiedBy": [],
 			"assumption": "用户明确要求统一仓库模式：每个脚本一个文件夹，TS 源码，构建输出单一 JS 文件。这是一个全新的目标。",
-			"maxChildIndex": 7
+			"maxChildIndex": 8
 		},
 		"d4dc577a-4604-4dbb-b024-27342f8c09e2": {
 			"id": "d4dc577a-4604-4dbb-b024-27342f8c09e2",
@@ -352,7 +353,9 @@
 			"content": "配置 GitHub Actions + GitHub Pages 实现油猴脚本自动发布到 Greasyfork",
 			"status": "in_progress",
 			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
-			"childrenIds": [],
+			"childrenIds": [
+				"a878f075-36bd-4e0f-a961-87bb6d5a7d8f"
+			],
 			"codeBindings": [],
 			"createdBy": {
 				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
@@ -366,7 +369,114 @@
 					"action": "updated: content, status→in_progress"
 				}
 			],
-			"assumption": "用户希望自动发布到 Greasyfork，这是 G1 的延伸目标。"
+			"assumption": "用户希望自动发布到 Greasyfork，这是 G1 的延伸目标。",
+			"maxChildIndex": 1
+		},
+		"a878f075-36bd-4e0f-a961-87bb6d5a7d8f": {
+			"id": "a878f075-36bd-4e0f-a961-87bb6d5a7d8f",
+			"shortId": "I1.7.1",
+			"type": "impl",
+			"content": "feat: 添加 GitHub Actions CI + GitHub Pages 自动发布\n\n- 新增 .github/workflows/publish.yml：push 到 main 时自动构建并部署到 gh-pages\n- 新增 scripts/manifest.ts：生成 sync-manifest.json 到 dist/\n- ScriptConfigBase 新增 greasyforkId 字段\n- build.ts 自动注入 downloadURL/updateURL（指向 GitHub Pages）\n- bilibili-block 添加 greasyforkId: 467384\n- package.json 新增 manifest 命令",
+			"status": "done",
+			"parentId": "8a02e705-67eb-4539-8790-8a35d03bd5e7",
+			"childrenIds": [],
+			"codeBindings": [
+				{
+					"commitHash": "bf9bc10e90cf1ff8554b96a90c3e90e3d5e86d3f",
+					"commitMessage": "[intent:O1.7] feat: 添加 GitHub Actions CI + GitHub Pages 自动发布\n\n- 新增 .github/workflows/publish.yml：push 到 main 时自动构建并部署到 gh-pages\n- 新增 scripts/manifest.ts：生成 sync-manifest.json 到 dist/\n- ScriptConfigBase 新增 greasyforkId 字段\n- build.ts 自动注入 downloadURL/updateURL（指向 GitHub Pages）\n- bilibili-block 添加 greasyforkId: 467384\n- package.json 新增 manifest 命令",
+					"files": [
+						".github/workflows/publish.yml",
+						".roo/intent-tree.json",
+						"package.json",
+						"scripts/build.ts",
+						"scripts/manifest.ts",
+						"src/bilibili-block/meta.ts",
+						"src/shared/types.ts"
+					],
+					"diffSummary": "7 file(s), +272 -5",
+					"timestamp": "2026-02-17T14:16:47.976Z"
+				}
+			],
+			"createdBy": {
+				"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+				"timestamp": "2026-02-17T14:16:47.976Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T14:16:47.976Z",
+					"action": "bound commit bf9bc10"
+				},
+				{
+					"taskId": "019c6bba-5c99-727e-937e-1531e1cf673e",
+					"timestamp": "2026-02-17T14:16:47.976Z",
+					"action": "updated: status→done"
+				}
+			]
+		},
+		"5633576d-4952-4e5d-a1bc-23482e616ac8": {
+			"id": "5633576d-4952-4e5d-a1bc-23482e616ac8",
+			"shortId": "O1.8",
+			"type": "objective",
+			"content": "bilibili-block 脚本支持通过 Tampermonkey 菜单配置 FILTER_BLOCK_UIDS 和 MIN_FOLLOWER，用户无需修改代码",
+			"status": "planned",
+			"parentId": "9fcfb892-37ae-477e-a133-530b729caefd",
+			"childrenIds": [
+				"4cbd4dc3-0628-4b46-a07f-36b993b9759c"
+			],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+				"timestamp": "2026-02-17T15:03:54.765Z",
+				"action": "created"
+			},
+			"modifiedBy": [],
+			"assumption": "用户希望 bilibili-block 脚本的配置项（FILTER_BLOCK_UIDS、MIN_FOLLOWER）可以通过 Tampermonkey 的 GM API 在 Greasyfork 上配置，无需修改代码。这是 G1 下的一个新功能需求。",
+			"maxChildIndex": 1
+		},
+		"4cbd4dc3-0628-4b46-a07f-36b993b9759c": {
+			"id": "4cbd4dc3-0628-4b46-a07f-36b993b9759c",
+			"shortId": "A1.8.1",
+			"type": "approach",
+			"content": "使用 GM_getValue/GM_setValue 持久化配置 + GM_registerMenuCommand 注册菜单命令 + prompt 弹窗让用户输入配置值",
+			"status": "planned",
+			"parentId": "5633576d-4952-4e5d-a1bc-23482e616ac8",
+			"childrenIds": [
+				"5932aec0-a912-4af4-b03f-90660370e5b7"
+			],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+				"timestamp": "2026-02-17T15:04:01.168Z",
+				"action": "created"
+			},
+			"modifiedBy": [],
+			"assumption": "使用 GM_getValue/GM_setValue/GM_registerMenuCommand 实现配置菜单是油猴脚本的标准做法，用户可以通过菜单命令打开配置面板。",
+			"maxChildIndex": 1
+		},
+		"5932aec0-a912-4af4-b03f-90660370e5b7": {
+			"id": "5932aec0-a912-4af4-b03f-90660370e5b7",
+			"shortId": "I1.8.1.1",
+			"type": "impl",
+			"content": "修改 bilibili-block 的 meta.ts（添加 grant 权限、提升版本号）和 index.ts（使用 GM API 配置），推送触发 CI/CD",
+			"status": "in_progress",
+			"parentId": "4cbd4dc3-0628-4b46-a07f-36b993b9759c",
+			"childrenIds": [],
+			"codeBindings": [],
+			"createdBy": {
+				"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+				"timestamp": "2026-02-17T15:04:07.395Z",
+				"action": "created"
+			},
+			"modifiedBy": [
+				{
+					"taskId": "019c6c20-b063-76ea-b707-f6880e8a9360",
+					"timestamp": "2026-02-17T15:04:13.817Z",
+					"action": "updated: content, status→in_progress"
+				}
+			],
+			"assumption": "需要修改 meta.ts 添加 GM API grant 权限，修改 index.ts 使用 GM API 读取配置并注册菜单，提升版本号，然后推送触发 CI/CD。"
 		}
 	},
 	"rootIds": [
@@ -382,7 +492,11 @@
 		"I1.5": "94fde7ec-d937-44f9-9176-3327b82f874f",
 		"O1.6": "a401200a-d3d3-4609-97fe-e7ce0af87404",
 		"I1.6.1": "4a8fae30-29df-4b2f-b5d0-d76954b9ecce",
-		"O1.7": "8a02e705-67eb-4539-8790-8a35d03bd5e7"
+		"O1.7": "8a02e705-67eb-4539-8790-8a35d03bd5e7",
+		"I1.7.1": "a878f075-36bd-4e0f-a961-87bb6d5a7d8f",
+		"O1.8": "5633576d-4952-4e5d-a1bc-23482e616ac8",
+		"A1.8.1": "4cbd4dc3-0628-4b46-a07f-36b993b9759c",
+		"I1.8.1.1": "5932aec0-a912-4af4-b03f-90660370e5b7"
 	},
 	"rootMaxChildIndex": 1
 }
