@@ -1,13 +1,82 @@
 export {};
 
+// ─── GM API 类型声明 ──────────────────────────────────────────
+declare function GM_getValue<T>(key: string, defaultValue: T): T;
+declare function GM_setValue(key: string, value: unknown): void;
+declare function GM_registerMenuCommand(
+  name: string,
+  callback: () => void
+): void;
+
+// ─── 配置管理 ─────────────────────────────────────────────────
+
+// 默认值
+const DEFAULT_FILTER_BLOCK_UIDS = [113560378];
+const DEFAULT_MIN_FOLLOWER = 2000;
+
+// 从 GM 存储读取配置（首次使用时自动写入默认值）
+let FILTER_BLOCK_UIDS: number[] = GM_getValue(
+  'FILTER_BLOCK_UIDS',
+  DEFAULT_FILTER_BLOCK_UIDS
+);
+let MIN_FOLLOWER: number = GM_getValue(
+  'MIN_FOLLOWER',
+  DEFAULT_MIN_FOLLOWER
+);
+
+// ─── 配置菜单 ─────────────────────────────────────────────────
+
+GM_registerMenuCommand('⚙️ 设置屏蔽UID列表', () => {
+  const current = FILTER_BLOCK_UIDS.join(', ');
+  const input = prompt(
+    '请输入需要屏蔽的UID列表（多个UID用英文逗号分隔）：\n\n例如：113560378, 123456789',
+    current
+  );
+  if (input === null) return; // 用户取消
+
+  const parsed = input
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => /^\d+$/.test(s))
+    .map(Number);
+
+  FILTER_BLOCK_UIDS = parsed;
+  GM_setValue('FILTER_BLOCK_UIDS', parsed);
+  alert(`✅ 已保存屏蔽UID列表（${parsed.length} 个UID）\n刷新页面后生效`);
+});
+
+GM_registerMenuCommand('⚙️ 设置最低粉丝数', () => {
+  const input = prompt(
+    '请输入最低粉丝数（低于此数量的UP主视频将被屏蔽）：',
+    String(MIN_FOLLOWER)
+  );
+  if (input === null) return; // 用户取消
+
+  const parsed = parseInt(input, 10);
+  if (isNaN(parsed) || parsed < 0) {
+    alert('❌ 请输入有效的非负整数');
+    return;
+  }
+
+  MIN_FOLLOWER = parsed;
+  GM_setValue('MIN_FOLLOWER', parsed);
+  alert(`✅ 已保存最低粉丝数：${parsed}\n刷新页面后生效`);
+});
+
+GM_registerMenuCommand('📋 查看当前配置', () => {
+  alert(
+    `当前配置：\n\n` +
+      `屏蔽UID列表：${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(', ') : '（空）'}\n` +
+      `最低粉丝数：${MIN_FOLLOWER}`
+  );
+});
+
+// ─── 脚本逻辑 ─────────────────────────────────────────────────
+
 // 定义需要筛选屏蔽的视频卡片类名
 const FILTER_CLASSES = ['.bili-feed-card'];
 // 定义需要直接直接屏蔽的直播类名
 const FILTER_BLOCK_CLASSES = ['.floor-single-card'];
-// 定义需要直接屏蔽的作者uid
-const FILTER_BLOCK_UIDS = [113560378];
-// 定义需要屏蔽的最小的follower数
-const MIN_FOLLOWER = 2000;
 // 定义接口前缀
 const API_USERDATA = 'https://api.bilibili.com/x/relation/stat?vmid=';
 

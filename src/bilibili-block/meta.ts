@@ -9,7 +9,7 @@ export default defineConfig({
       en: "Block Bilibili's marketing videos and promotional videos",
     },
     namespace: 'http://tampermonkey.net/',
-    version: '2.8',
+    version: '2.9',
     description: {
       '': '屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的',
       'zh-CN':
@@ -24,7 +24,11 @@ export default defineConfig({
       'https://www.bilibili.com/?spm_id_from=*',
     ],
     icon: 'https://www.bilibili.com/favicon.ico',
-    grant: 'none',
+    grant: [
+      'GM_getValue',
+      'GM_setValue',
+      'GM_registerMenuCommand',
+    ],
     license: 'GNU General Public License v3.0',
     downloadURL:
       'https://update.greasyfork.org/scripts/467384/%F0%9F%9B%A0%EF%B8%8F%E5%B1%8F%E8%94%BDB%E7%AB%99%E8%90%A5%E9%94%80%E8%A7%86%E9%A2%91.user.js',
