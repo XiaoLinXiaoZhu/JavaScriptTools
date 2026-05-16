@@ -30,6 +30,8 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      - run: cd packages/components && bun install
+
       - run: bun run typecheck
 
       - name: Build component library
