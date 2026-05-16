@@ -1,13 +1,5 @@
 export {};
 
-// ─── GM API 类型声明 ──────────────────────────────────────────
-declare function GM_getValue<T>(key: string, defaultValue: T): T;
-declare function GM_setValue(key: string, value: unknown): void;
-declare function GM_registerMenuCommand(
-  name: string,
-  callback: () => void
-): void;
-
 // ─── 配置管理 ─────────────────────────────────────────────────
 
 const DEFAULT_FILTER_BLOCK_UIDS = [113560378];
