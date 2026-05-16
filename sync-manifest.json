@@ -42,6 +42,14 @@
     "greasyforkUrl": "https://greasyfork.org/scripts/497929"
   },
   {
+    "name": "bilibili-search-filter",
+    "mode": "userscript",
+    "category": "bilibili",
+    "distPath": "bilibili/bilibili-search-filter.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-search-filter.user.js",
+    "version": "1.0.1"
+  },
+  {
     "name": "evaluation-auto",
     "mode": "userscript",
     "category": "campus",
