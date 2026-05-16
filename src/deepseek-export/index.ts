@@ -167,7 +167,7 @@ function setupPanel() {
   panel = createFloatingPanel({
     title: 'DeepSeek 导出',
     content: buildPanelHTML(),
-    width: 280,
+    width: 340,
     height: 200,
     position: { x: window.innerWidth - 300, y: window.innerHeight - 300 },
   });
