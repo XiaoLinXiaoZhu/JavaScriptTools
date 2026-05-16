@@ -88,14 +88,14 @@ let countNF: InstanceType<typeof NumberFlow> | null = null;
 function buildPanelHTML(): string {
   return `
 <div style="display:flex;flex-direction:column;gap:12px;align-items:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-  <div style="display:flex;gap:24px;width:100%;justify-content:center">
-    <div style="text-align:center">
-      <div style="font-size:11px;color:#999;margin-bottom:4px">滚动进度</div>
-      <span style="font-size:13px;color:#666">0 / 0</span>
+  <div class="dse-dashboard">
+    <div class="dse-dashboard__item">
+      <div class="dse-dashboard__label">滚动进度</div>
+      <number-flow id="dse-nf-scroll" class="dse-dashboard__value">0</number-flow><span id="dse-scroll-max" class="dse-dashboard__unit">/ 0</span>
     </div>
-    <div style="text-align:center">
-      <div style="font-size:11px;color:#999;margin-bottom:4px">已收集</div>
-      <span style="font-size:13px;color:#666">0 条</span>
+    <div class="dse-dashboard__item">
+      <div class="dse-dashboard__label">已收集</div>
+      <number-flow id="dse-nf-count" class="dse-dashboard__value">0</number-flow><span class="dse-dashboard__unit">条</span>
     </div>
   </div>
   <div style="display:flex;gap:8px;width:100%">
@@ -168,35 +168,31 @@ function setupPanel() {
     title: 'DeepSeek 导出',
     content: buildPanelHTML(),
     width: 280,
-    height: 160,
+    height: 200,
     position: { x: window.innerWidth - 300, y: window.innerHeight - 300 },
   });
 
   panel.show();
 
   // 绑定按钮事件（延迟到 DOM 挂载）
-  setTimeout(() => bindPanelButtons(), 100);
+  setTimeout(() => {
+    scrollNF = document.querySelector('#dse-nf-scroll') as InstanceType<typeof NumberFlow> | null;
+    countNF = document.querySelector('#dse-nf-count') as InstanceType<typeof NumberFlow> | null;
+    bindPanelButtons();
+  }, 100);
 }
 
 function updateDashboard(scrollCur: number, scrollMax: number, msgCount: number) {
   if (!panel) return;
-  panel.setContent(`
-<div style="display:flex;flex-direction:column;gap:12px;align-items:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
-  <div class="dse-dashboard">
-    <div class="dse-dashboard__item">
-      <div class="dse-dashboard__label">滚动进度</div>
-      <number-flow id="dse-nf-scroll" class="dse-dashboard__value">${scrollCur}</number-flow><span class="dse-dashboard__unit">/ ${scrollMax}</span>
-    </div>
-    <div class="dse-dashboard__item">
-      <div class="dse-dashboard__label">已收集</div>
-      <number-flow id="dse-nf-count" class="dse-dashboard__value">${msgCount}</number-flow><span class="dse-dashboard__unit">条</span>
-    </div>
-  </div>
-  <div style="display:flex;gap:8px;width:100%">
-    <button id="dse-btn-md" class="dse-panel-btn dse-panel-btn--primary" style="flex:1" disabled>导出 Markdown</button>
-    <button id="dse-btn-json" class="dse-panel-btn" style="flex:1" disabled>导出 JSON</button>
-  </div>
-</div>`);
+  if (scrollNF) scrollNF.update(scrollCur);
+  if (countNF) countNF.update(msgCount);
+  // Update the scroll-max label and button disabled state via DOM
+  const maxLabel = document.querySelector('#dse-scroll-max');
+  if (maxLabel) maxLabel.textContent = `/ ${scrollMax}`;
+  const btnMd = document.querySelector('#dse-btn-md') as HTMLButtonElement | null;
+  const btnJson = document.querySelector('#dse-btn-json') as HTMLButtonElement | null;
+  if (btnMd) btnMd.disabled = true;
+  if (btnJson) btnJson.disabled = true;
 }
 
 function bindPanelButtons() {
