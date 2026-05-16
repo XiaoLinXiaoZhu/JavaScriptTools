@@ -2,6 +2,7 @@ import * as esbuild from 'esbuild';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
+
 import type {
   ScriptConfig,
   UserScriptConfig,
@@ -347,6 +348,17 @@ async function buildAll(entries: ScriptEntry[]): Promise<void> {
   }
 
   console.log(`\n✨ 全部构建完成！\n`);
+
+  // 生成脚本文档
+  console.log('📄 生成脚本文档...\n');
+  await processAllDocs(entries);
+}
+
+async function processAllDocs(entries: ScriptEntry[]): Promise<void> {
+  const { processScriptDocs } = await import('./docs');
+  for (const entry of entries) {
+    await processScriptDocs(entry.name, entry.dir, entry.config);
+  }
 }
 
 async function main(): Promise<void> {

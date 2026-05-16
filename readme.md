@@ -1,47 +1,40 @@
-# 项目名称
+# JavaScriptTools
 
-## 简介
+个人脚本集合，主要是油猴脚本（UserScript），也包含一些 Obsidian 插件和 Node.js 工具。
 
-这是一个用于存放自己写的一些脚本的仓库，主要是用于存放自己写的一些油猴脚本，以及一些其他的脚本。主要语言为JavaScript。
-
-
-## 使用方法
+## 脚本列表
 
 ### 油猴脚本
 
-1. 首先，确保你的浏览器已经安装了油猴插件。你可以在浏览器的插件商店中搜索"油猴"，然后点击安装。
+| 脚本 | 说明 | 安装 |
+|------|------|------|
+| [屏蔽B站营销视频](src/bilibili-block/) | 屏蔽 B 站主页推荐的营销/推广视频卡片 | [GreasyFork](https://greasyfork.org/scripts/467384) \| [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js) |
+| [ASMR 自动下载](src/asmr-download/) | 自动下载 ASMR 网站音频 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/asmr-download.user.js) |
+| [AutoTool Download](src/autoclick/) | 匹配特殊内容并模拟点击下载 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js) |
+| [动画疯自动脚本](src/bahamut-auto/) | 自动跳过广告、同意年龄确认 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js) |
+| [Better Iwara](src/better-iwara/) | Iwara 样式优化 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/better-iwara.user.js) |
+| [评价表自动选择](src/evaluation-auto/) | 自动选择教学评价 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js) |
+| [HUST 军理自动填充](src/hust-autofill/) | 华科军理线上作业自动填充 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js) |
 
-2. 打开你想要安装油猴脚本的网页。
+### 其他工具
 
-3. 在浏览器的工具栏中，点击油猴插件的图标，打开油猴脚本管理界面。
+| 项目 | 说明 | 类型 |
+|------|------|------|
+| [Obsidian CardView](src/obsidian-cardview/) | Obsidian 卡片视图样式 | Plain JS |
+| [Hexo Image Redirect](src/hexo-image-redirect/) | Hexo 博客图片重定向 | Node.js 模块 |
 
-4. 在油猴脚本管理界面中，点击"新建脚本"按钮。
+## 安装方式
 
-5. 在弹出的编辑器中，粘贴你想要安装的油猴脚本代码。
+1. 安装浏览器扩展 [Tampermonkey](https://www.tampermonkey.net/)
+2. 点击上方表格中的安装链接，Tampermonkey 会自动弹出安装确认
+3. 脚本会通过 `@updateURL` 自动检查更新
 
-6. 点击保存按钮，保存脚本。
+部分脚本同时发布在 [GreasyFork](https://greasyfork.org/zh-CN/users/1211126-xiaolinxiaozhu) 上。
 
-7. 刷新你想要应用脚本的网页，脚本将会自动生效。
+## 开发
 
-现在，你已经成功安装了油猴脚本！享受它带来的便利吧！
-
-我的大部分油猴脚本都同时发布在了Greasy Fork上，你可以在这里找到它们，使用这个安装和更新会方便很多：[Greasy Fork](https://greasyfork.org/zh-CN/users/1211126-xiaolinxiaozhu)
-
-### npm 包
-
-这些工具是针对于 hexo 博客的图片重定向的，很抱歉，我不知道该如何将其发布到npm，所以不能直接使用npm安装，你可以直接下载源码，然后使用`npm install`安装依赖，然后使用`npm run build`构建，最后使用`npm link`将其链接到全局，这样你就可以在任何地方使用这些工具了。
-
-
-
-## 功能列表
-- HUST华中科技大学军理线上作业简易自动填充助手.user.js 用于华中科技大学军理线上作业的自动填充
-- AutoTool_DownloadASMR.user.js 用于下载ASMR网站的音频
-- 屏蔽B站营销视频和推广视频.js 用于屏蔽B站营销视频和推广视频
-- hexo-image-redirect 用于hexo博客的图片重定向(因为我不知到该如何将其发布到npm，所以只能放在这里了)
-
+参见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 许可证
-MIT许可证
 
-
-
+MIT

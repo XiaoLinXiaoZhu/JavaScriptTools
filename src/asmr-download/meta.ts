@@ -4,7 +4,7 @@ export default defineConfig({
   meta: {
     name: 'AutoTool',
     namespace: 'https://github.com/XiaoLinXiaoZhu/AutoTool',
-    version: '0.1',
+    version: '0.1.1',
     description: "XLXZ'a AutoTool",
     author: 'XLXZ',
     match: ['https://www.asmrgay.com/*', 'https://cczhhz.asmr.icu/*'],

@@ -4,7 +4,7 @@ export default defineConfig({
   meta: {
     name: 'Better Iwara',
     namespace: 'none',
-    version: '0.1',
+    version: '0.1.1',
     description: 'An alternate style for Iwara, made by XLXZ',
     author: 'XLXZ',
     license: 'CC BY-NC',
