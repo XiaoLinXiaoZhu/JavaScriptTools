@@ -1,4 +1,5 @@
 import style from './style.css';
+import { createAnimatedSlider, showToast } from '@xlxz/components';
 
 // --- 样式注入 ---
 GM_addStyle(style);
@@ -106,44 +107,53 @@ function createSettings(): HTMLElement {
   container.className = 'qf-search-condition-row';
   container.id = 'qf-settings-row';
 
-  container.innerHTML = `
-    <span class="qf-condition-label">质量过滤</span>
-    <div class="qf-condition-controls">
-      <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
-        <label style="font-size: 12px; color: #666;">播放权重:</label>
-        <input type="range" id="qf-in-pw" class="qf-condition-input" min="0" max="100" value="${CONFIG.playWeight}" style="flex: 0.5;">
-        <span id="qf-val-pw" class="qf-condition-value">${CONFIG.playWeight}%</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
-        <label style="font-size: 12px; color: #666;">粉丝权重:</label>
-        <input type="range" id="qf-in-fw" class="qf-condition-input" min="0" max="100" value="${CONFIG.fansWeight}" style="flex: 0.5;">
-        <span id="qf-val-fw" class="qf-condition-value">${CONFIG.fansWeight}%</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
-        <label style="font-size: 12px; color: #666;">阈值:</label>
-        <input type="range" id="qf-in-th" class="qf-condition-input" min="0" max="100" value="${CONFIG.threshold}" style="flex: 0.5;">
-        <span id="qf-val-th" class="qf-condition-value">${CONFIG.threshold}</span>
-      </div>
-      <button class="qf-save-btn">保存</button>
-    </div>
-  `;
+  const label = document.createElement('span');
+  label.className = 'qf-condition-label';
+  label.textContent = '质量过滤';
+  container.appendChild(label);
 
-  (container.querySelector('#qf-in-pw') as HTMLInputElement).oninput = (e: Event) => {
-    document.getElementById('qf-val-pw')!.textContent = (e.target as HTMLInputElement).value + '%';
-  };
-  (container.querySelector('#qf-in-fw') as HTMLInputElement).oninput = (e: Event) => {
-    document.getElementById('qf-val-fw')!.textContent = (e.target as HTMLInputElement).value + '%';
-  };
-  (container.querySelector('#qf-in-th') as HTMLInputElement).oninput = (e: Event) => {
-    document.getElementById('qf-val-th')!.textContent = (e.target as HTMLInputElement).value;
-  };
+  const controls = document.createElement('div');
+  controls.className = 'qf-condition-controls';
+  container.appendChild(controls);
 
-  (container.querySelector('.qf-save-btn') as HTMLButtonElement).onclick = () => {
-    GM_setValue('playWeight', parseInt((container.querySelector('#qf-in-pw') as HTMLInputElement).value));
-    GM_setValue('fansWeight', parseInt((container.querySelector('#qf-in-fw') as HTMLInputElement).value));
-    GM_setValue('threshold', parseInt((container.querySelector('#qf-in-th') as HTMLInputElement).value));
-    location.reload();
+  // 使用 AnimatedSlider 组件
+  const pwSlider = createAnimatedSlider({
+    label: '播放权重',
+    min: 0,
+    max: 100,
+    value: CONFIG.playWeight,
+    suffix: '%',
+  });
+  controls.appendChild(pwSlider.getElement());
+
+  const fwSlider = createAnimatedSlider({
+    label: '粉丝权重',
+    min: 0,
+    max: 100,
+    value: CONFIG.fansWeight,
+    suffix: '%',
+  });
+  controls.appendChild(fwSlider.getElement());
+
+  const thSlider = createAnimatedSlider({
+    label: '阈值',
+    min: 0,
+    max: 100,
+    value: CONFIG.threshold,
+  });
+  controls.appendChild(thSlider.getElement());
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'qf-save-btn';
+  saveBtn.textContent = '保存';
+  saveBtn.onclick = () => {
+    GM_setValue('playWeight', pwSlider.getValue());
+    GM_setValue('fansWeight', fwSlider.getValue());
+    GM_setValue('threshold', thSlider.getValue());
+    showToast('设置已保存，刷新后生效', { type: 'success' });
+    setTimeout(() => location.reload(), 1000);
   };
+  controls.appendChild(saveBtn);
 
   return container;
 }

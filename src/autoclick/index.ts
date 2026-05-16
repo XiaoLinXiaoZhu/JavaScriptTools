@@ -1,4 +1,5 @@
 export {};
+import { showToast } from '@xlxz/components';
 
 function openURL(url: string): void {
   const aLabel = document.createElement('a');
@@ -33,6 +34,7 @@ class AutoDownload {
     }
     console.log('element:', element);
     element.click();
+    showToast('开始下载...', { type: 'info', duration: 2000 });
     this.downloaded = true;
   }
 
@@ -62,6 +64,9 @@ class AutoDownload {
         break;
       }
       this.download();
+      if (this.downloaded) {
+        showToast('自动点击成功', { type: 'success', duration: 2000 });
+      }
       await new Promise((resolve) => setTimeout(resolve, waitTime));
     }
   }
@@ -114,12 +119,14 @@ class AutoDownload {
         downloadLink.download = filename;
         document.body.appendChild(downloadLink);
         downloadLink.click();
+        showToast('下载成功: ' + filename, { type: 'success' });
         document.body.removeChild(downloadLink);
         URL.revokeObjectURL(downloadLink.href);
         console.log('Download triggered for:', url);
         this.downloaded = true;
       } catch (error) {
         console.error('Download failed:', error);
+        showToast('下载失败', { type: 'error' });
         await new Promise((resolve) => setTimeout(resolve, waitTime));
         continue;
       }

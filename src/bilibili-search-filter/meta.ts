@@ -4,7 +4,7 @@ export default defineConfig({
   meta: {
     name: 'Bilibili 视频质量筛选器',
     namespace: 'http://tampermonkey.net/',
-    version: '1.0.1',
+    version: '1.1.0',
     description:
       '通过播放量和UP主粉丝量加权筛选低质量视频，并使用毛玻璃遮罩',
     author: 'XLXZ',
