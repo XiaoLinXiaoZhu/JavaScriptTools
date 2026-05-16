@@ -1,0 +1,226 @@
+/* ConfigPanel 配置面板 */
+.xlxz-panel {
+  position: fixed;
+  z-index: 99998;
+  background: var(--color-bg-elevated, #fff);
+  border: 1px solid var(--color-border, #e7e7e7);
+  border-radius: var(--lg-radius, 12px);
+  box-shadow: 0 8px 32px var(--color-shadow-lg, rgba(0, 0, 0, 0.12));
+  padding: var(--lg-space, 24px);
+  min-width: 320px;
+  max-width: 420px;
+  animation: xlxz-panel-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.xlxz-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--md-space, 16px);
+}
+
+.xlxz-panel-title {
+  font-size: var(--font-lg, 16px);
+  font-weight: 600;
+  color: var(--color-text, #222);
+  margin: 0;
+}
+
+.xlxz-panel-close {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  border-radius: var(--sm-radius, 6px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted, #999);
+  transition: background var(--transition-fast);
+}
+.xlxz-panel-close:hover {
+  background: var(--color-bg-muted, #f5f5f5);
+  color: var(--color-text, #222);
+}
+
+.xlxz-panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-space, 16px);
+}
+
+.xlxz-panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sm-space, 8px);
+  margin-top: var(--lg-space, 24px);
+  padding-top: var(--md-space, 16px);
+  border-top: 1px solid var(--color-border, #e7e7e7);
+}
+
+/* 表单行 */
+.xlxz-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--xs-space, 4px);
+}
+
+.xlxz-field-label {
+  font-size: var(--font-sm, 12px);
+  font-weight: 500;
+  color: var(--color-text-secondary, #666);
+}
+
+.xlxz-field-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sm-space, 8px);
+}
+
+.xlxz-field-value {
+  min-width: 36px;
+  text-align: right;
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-muted, #999);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Slider */
+.xlxz-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  background: var(--color-border, #e7e7e7);
+  border-radius: 2px;
+  outline: none;
+  transition: background var(--transition-fast);
+}
+.xlxz-slider:hover { background: #d0d0d0; }
+
+.xlxz-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-primary, #fb7299);
+  cursor: pointer;
+  box-shadow: 0 1px 4px var(--color-shadow);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.xlxz-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+  box-shadow: 0 2px 8px rgba(251, 114, 153, 0.3);
+}
+
+.xlxz-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary, #fb7299);
+  cursor: pointer;
+}
+
+/* Number input */
+.xlxz-input-number {
+  width: 80px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--color-border, #e7e7e7);
+  border-radius: var(--sm-radius, 6px);
+  font-size: var(--font-md, 14px);
+  text-align: center;
+  outline: none;
+  color: var(--color-text, #222);
+  background: var(--color-bg, #fff);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.xlxz-input-number:hover {
+  border-color: var(--color-primary, #fb7299);
+}
+.xlxz-input-number:focus {
+  border-color: var(--color-primary, #fb7299);
+  box-shadow: 0 0 0 2px var(--color-primary-light, rgba(251, 114, 153, 0.1));
+}
+
+/* Button */
+.xlxz-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--xs-space, 4px);
+  padding: 7px 14px;
+  border: none;
+  border-radius: var(--sm-radius, 6px);
+  font-size: var(--font-md, 14px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+.xlxz-btn:active { transform: scale(0.96); }
+
+.xlxz-btn--primary {
+  background: var(--color-primary, #fb7299);
+  color: #fff;
+}
+.xlxz-btn--primary:hover {
+  background: var(--color-primary-hover, #f57fb9);
+  box-shadow: 0 2px 8px rgba(251, 114, 153, 0.3);
+}
+
+.xlxz-btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary, #666);
+  border: 1px solid var(--color-border, #e7e7e7);
+}
+.xlxz-btn--ghost:hover {
+  border-color: var(--color-primary, #fb7299);
+  color: var(--color-primary, #fb7299);
+  background: var(--color-primary-light);
+}
+
+/* Tooltip button */
+.xlxz-btn-tooltip {
+  position: relative;
+}
+.xlxz-btn-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  padding: 6px 10px;
+  border-radius: var(--sm-radius, 6px);
+  background: var(--color-text, #222);
+  color: #fff;
+  font-size: var(--font-xs, 11px);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+.xlxz-btn-tooltip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+@keyframes xlxz-panel-in {
+  from { opacity: 0; transform: scale(0.9) translateY(-10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Panel 过渡动画 (Vue Transition) */
+.xlxz-panel-anim-enter-active {
+  animation: xlxz-panel-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.xlxz-panel-anim-leave-active {
+  animation: xlxz-panel-out 0.2s ease forwards;
+}
+
+@keyframes xlxz-panel-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.9) translateY(-10px); }
+}

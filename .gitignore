@@ -35,5 +35,12 @@ Desktop.ini
 # autoclick.js
 # 动画疯自动脚本.js
 # 屏蔽B站营销视频和推广视频.js
+
+# ─── Packages 构建产物 ─────────────────────────
+packages/components/dist/
+packages/components/node_modules/
+apps/preview/node_modules/
+
+# ─── 运行时产物 ────────────────────────────────
 .temp/
 _n0n_*

@@ -1,0 +1,145 @@
+/* FloatingPanel 可拖拽浮动面板 — visionOS 风格 */
+.xlxz-float-panel-wrapper {
+  position: fixed;
+  z-index: 99990;
+}
+
+/* 面板主体 */
+.xlxz-float-panel {
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg-elevated, #fff);
+  border: 1px solid var(--color-border, #e7e7e7);
+  border-radius: var(--lg-radius, 12px);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--transition-fast, 0.15s ease);
+}
+
+.xlxz-float-panel--dragging {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.xlxz-float-panel__title {
+  padding: 12px 16px 0;
+  font-size: var(--font-md, 14px);
+  font-weight: 600;
+  color: var(--color-text, #222);
+  margin: 0;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.xlxz-float-panel__body {
+  flex: 1;
+  overflow: auto;
+  padding: var(--md-space, 16px);
+}
+
+/* ═══ 环形控件段 ═══
+ * 概念：面板外有一圈不可见的环，控件是这个环的可见片段。
+ * 所有段距面板底边 8px，粗细和圆角统一。
+ */
+
+/* 关闭条 — 底部左侧短横条 */
+.xlxz-float-panel__close {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 8px;
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+  border: none;
+  background: rgba(120, 120, 128, 0.3);
+  cursor: pointer;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.15s ease,
+              border-radius 0.2s ease;
+}
+
+.xlxz-float-panel__close:hover {
+  background: rgba(255, 95, 87, 0.8);
+}
+
+.xlxz-float-panel__close--near {
+  width: 32px;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 95, 87, 0.5);
+}
+
+/* 拖动条 — 底部居中长横条 */
+.xlxz-float-panel__drag-bar {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(120, 120, 128, 0.3);
+  cursor: grab;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.15s ease,
+              border-radius 0.2s ease;
+}
+
+.xlxz-float-panel__drag-bar:active {
+  cursor: grabbing;
+}
+
+.xlxz-float-panel__drag-bar--near {
+  width: 55%;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(120, 120, 128, 0.4);
+}
+
+.xlxz-float-panel__drag-bar--dragging {
+  width: 55%;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-primary, #fb7299);
+}
+
+/* 调整大小手柄 — SVG 圆弧 */
+.xlxz-float-panel__resize {
+  pointer-events: none;
+}
+
+.xlxz-float-panel__resize-svg {
+  pointer-events: stroke;
+}
+
+.resize-arc {
+  fill: none;
+  stroke: rgba(120, 120, 128, 0.3);
+  stroke-linecap: round;
+  transition: stroke 0.3s ease, stroke-width 0.3s ease, d 0.3s ease;
+}
+
+.resize-arc--near {
+  stroke: rgba(120, 120, 128, 0.65);
+}
+
+/* 进入/离开动画 */
+.xlxz-float-panel-anim-enter-active {
+  animation: xlxz-float-panel-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.xlxz-float-panel-anim-leave-active {
+  animation: xlxz-float-panel-out 0.2s ease forwards;
+}
+
+@keyframes xlxz-float-panel-in {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes xlxz-float-panel-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.92) translateY(8px); }
+}

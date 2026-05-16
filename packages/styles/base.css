@@ -1,0 +1,39 @@
+/* @xlxz/styles — 设计变量 */
+:host, .xlxz-root {
+  --xs-radius: 4px;
+  --sm-radius: 6px;
+  --md-radius: 8px;
+  --lg-radius: 12px;
+
+  --xs-space: 4px;
+  --sm-space: 8px;
+  --md-space: 16px;
+  --lg-space: 24px;
+
+  --font-xs: 11px;
+  --font-sm: 12px;
+  --font-md: 14px;
+  --font-lg: 16px;
+
+  --color-primary: #fb7299;
+  --color-primary-hover: #f57fb9;
+  --color-primary-light: rgba(251, 114, 153, 0.1);
+  --color-success: #52c41a;
+  --color-warning: #faad14;
+  --color-error: #f5222d;
+  --color-info: #1890ff;
+
+  --color-bg: #ffffff;
+  --color-bg-elevated: #ffffff;
+  --color-bg-muted: #f5f5f5;
+  --color-border: #e7e7e7;
+  --color-text: #222222;
+  --color-text-secondary: #666666;
+  --color-text-muted: #999999;
+  --color-shadow: rgba(0, 0, 0, 0.08);
+  --color-shadow-lg: rgba(0, 0, 0, 0.12);
+
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
