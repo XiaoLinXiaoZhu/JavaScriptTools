@@ -11,3 +11,5 @@ export type { ToastOptions, ToastPosition } from './toast';
 export type { ConfigPanelOptions, ConfigField } from './config-panel';
 export { createFloatingPanel } from './floating-panel';
 export type { FloatingPanelOptions } from './floating-panel';
+export { createAnimatedSlider } from './animated-slider';
+export type { AnimatedSliderOptions, AnimatedSliderInstance } from './animated-slider';

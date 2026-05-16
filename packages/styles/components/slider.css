@@ -1,0 +1,84 @@
+/* AnimatedSlider 带动画数字的滑动条 */
+.xlxz-animated-slider {
+  display: flex;
+  align-items: center;
+  gap: var(--sm-space, 8px);
+  width: 100%;
+}
+
+.xlxz-animated-slider__track {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  background: var(--color-border, #e7e7e7);
+  border-radius: 2px;
+  outline: none;
+  transition: background var(--transition-fast, 0.15s ease);
+}
+.xlxz-animated-slider__track:hover {
+  background: #d0d0d0;
+}
+
+.xlxz-animated-slider__track::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-primary, #fb7299);
+  cursor: pointer;
+  box-shadow: 0 1px 4px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  transition: transform var(--transition-fast, 0.15s ease),
+              box-shadow var(--transition-fast, 0.15s ease);
+}
+.xlxz-animated-slider__track::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+  box-shadow: 0 2px 8px rgba(251, 114, 153, 0.3);
+}
+.xlxz-animated-slider__track::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+.xlxz-animated-slider__track::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-primary, #fb7299);
+  cursor: pointer;
+}
+
+.xlxz-animated-slider__value {
+  display: inline-flex;
+  align-items: center;
+  min-width: 40px;
+  justify-content: flex-end;
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-secondary, #666);
+  font-variant-numeric: tabular-nums;
+}
+
+.xlxz-animated-slider__value number-flow {
+  display: inline-block;
+  font-size: inherit;
+  color: inherit;
+}
+
+.xlxz-animated-slider__suffix {
+  font-size: var(--font-sm, 12px);
+  color: var(--color-text-muted, #999);
+  margin-left: 2px;
+}
+
+/* Label 布局变体 */
+.xlxz-animated-slider--labeled {
+  flex-wrap: wrap;
+}
+
+.xlxz-animated-slider__label {
+  font-size: var(--font-sm, 12px);
+  font-weight: 500;
+  color: var(--color-text-secondary, #666);
+  width: 100%;
+  margin-bottom: var(--xs-space, 4px);
+}

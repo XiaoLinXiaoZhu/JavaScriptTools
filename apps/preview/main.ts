@@ -1,7 +1,7 @@
 /**
  * 预览页面 — 使用与 src/ 脚本相同的导入方式
  */
-import { showToast, createConfigPanel, configureToast, createFloatingPanel } from '@xlxz/components';
+import { showToast, createConfigPanel, configureToast, createFloatingPanel, createAnimatedSlider } from '@xlxz/components';
 
 // --- Toast 演示 ---
 document.getElementById('toast-info')!.onclick = () => {
@@ -80,3 +80,42 @@ floatPanel.hide();
 document.getElementById('float-toggle')!.onclick = () => {
   floatPanel.toggle();
 };
+
+// --- AnimatedSlider 演示 ---
+const sliderDemo = document.getElementById('slider-demo')!;
+
+const slider1 = createAnimatedSlider({
+  label: '播放量权重',
+  min: 0,
+  max: 100,
+  value: 50,
+  suffix: '%',
+  onChange(value) {
+    console.log('播放量权重:', value);
+  },
+});
+sliderDemo.appendChild(slider1.getElement());
+
+const slider2 = createAnimatedSlider({
+  label: '粉丝数权重',
+  min: 0,
+  max: 100,
+  value: 50,
+  suffix: '%',
+  onChange(value) {
+    console.log('粉丝数权重:', value);
+  },
+});
+sliderDemo.appendChild(slider2.getElement());
+
+const slider3 = createAnimatedSlider({
+  label: '过滤阈值',
+  min: 0,
+  max: 100,
+  step: 5,
+  value: 30,
+  onChange(value) {
+    console.log('过滤阈值:', value);
+  },
+});
+sliderDemo.appendChild(slider3.getElement());

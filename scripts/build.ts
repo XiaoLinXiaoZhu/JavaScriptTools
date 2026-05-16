@@ -200,7 +200,10 @@ async function buildUserScript(entry: ScriptEntry): Promise<void> {
     keepNames: true,
     banner: { js: header + '\n' },
     loader: { '.css': 'text' },
-    alias: { '@shared': path.join(SRC_DIR, 'shared') },
+    alias: {
+      '@shared': path.join(SRC_DIR, 'shared'),
+      '@xlxz/components': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'index.js'),
+    },
   });
 
   console.log(`  ✅ ${name} → dist/${config.category}/${outputName}.user.js`);
@@ -234,7 +237,10 @@ async function buildPlainScript(entry: ScriptEntry): Promise<void> {
     minify: false,
     keepNames: true,
     loader: { '.css': 'text' },
-    alias: { '@shared': path.join(SRC_DIR, 'shared') },
+    alias: {
+      '@shared': path.join(SRC_DIR, 'shared'),
+      '@xlxz/components': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'index.js'),
+    },
   });
 
   console.log(`  ✅ ${name} → dist/${config.category}/${outputName}${ext}`);
@@ -269,7 +275,10 @@ async function buildNodeScript(entry: ScriptEntry): Promise<void> {
     minify: false,
     keepNames: true,
     external,
-    alias: { '@shared': path.join(SRC_DIR, 'shared') },
+    alias: {
+      '@shared': path.join(SRC_DIR, 'shared'),
+      '@xlxz/components': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'index.js'),
+    },
   });
 
   // 如果脚本目录有 package.json，复制到输出目录
