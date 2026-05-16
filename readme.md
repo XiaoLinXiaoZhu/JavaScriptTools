@@ -9,6 +9,7 @@
 | 脚本 | 说明 | 安装 |
 |------|------|------|
 | [屏蔽B站营销视频](src/bilibili-block/) | 屏蔽 B 站主页推荐的营销/推广视频卡片 | [GreasyFork](https://greasyfork.org/scripts/467384) \| [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js) |
+| [B站搜索过滤](src/bilibili-search-filter/) | 通过播放量和粉丝数加权筛选低质量视频，毛玻璃遮罩 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-search-filter.user.js) |
 | [ASMR 自动下载](src/asmr-download/) | 自动下载 ASMR 网站音频 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/asmr-download.user.js) |
 | [AutoTool Download](src/autoclick/) | 匹配特殊内容并模拟点击下载 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js) |
 | [动画疯自动脚本](src/bahamut-auto/) | 自动跳过广告、同意年龄确认 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js) |

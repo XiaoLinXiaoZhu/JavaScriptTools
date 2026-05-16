@@ -11,7 +11,12 @@
     "declaration": false,
     "noEmit": true,
     "paths": {
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@xlxz/components": ["./packages/components/src/index.ts"],
+      "@xlxz/components/toast": ["./packages/components/src/toast/index.ts"],
+      "@xlxz/components/config-panel": ["./packages/components/src/config-panel/index.ts"],
+      "@xlxz/components/floating-panel": ["./packages/components/src/floating-panel/index.ts"],
+      "@xlxz/components/animated-slider": ["./packages/components/src/animated-slider/index.ts"]
     }
   },
   "include": ["src/**/*.ts", "scripts/**/*.ts"],
