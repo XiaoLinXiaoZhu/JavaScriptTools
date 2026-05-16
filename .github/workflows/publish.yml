@@ -6,8 +6,9 @@ on:
     paths:
       - 'src/**'
       - 'scripts/**'
+      - 'packages/**'
       - 'package.json'
-      - 'package-lock.json'
+      - 'bun.lock'
       - 'tsconfig.json'
       - '.github/workflows/**'
 
@@ -23,19 +24,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: 20
+          bun-version: latest
 
-      - run: npm ci
+      - run: bun install --frozen-lockfile
 
-      - run: npm run typecheck
+      - run: bun run typecheck
 
-      - run: npm run build
+      - name: Build component library
+        run: cd packages/components && bun run build
+
+      - run: bun run build
 
       # 生成同步清单（供调试和 Webhook 使用）
       - name: Generate sync manifest
-        run: npm run manifest
+        run: bun run manifest
 
       # 部署 dist/ 到 gh-pages 分支
       - name: Deploy to GitHub Pages
