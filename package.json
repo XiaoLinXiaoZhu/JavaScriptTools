@@ -10,7 +10,8 @@
     "manifest": "tsx scripts/manifest.ts",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "demo": "tsx packages/styles/demo/build.ts && start packages/styles/demo/index.html"
+    "demo": "tsx packages/styles/demo/build.ts && start packages/styles/demo/index.html",
+    "preview": "cd apps/preview && npm run dev"
   },
   "devDependencies": {
     "@types/node": "^25.2.3",
