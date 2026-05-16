@@ -35,3 +35,5 @@ Desktop.ini
 # autoclick.js
 # 动画疯自动脚本.js
 # 屏蔽B站营销视频和推广视频.js
+.temp/
+_n0n_*
