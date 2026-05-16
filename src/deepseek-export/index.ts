@@ -59,9 +59,16 @@ function collectMessages(): Message[] {
 
 // ─── 滚动收集 ────────────────────────────────
 function findScrollContainer(): HTMLElement | null {
-  // 优先找包含虚拟列表的可滚动父元素
   const vList = document.querySelector('.ds-virtual-list');
   if (!vList) return null;
+
+  // 检查虚拟列表自身是否可滚动
+  const vStyle = window.getComputedStyle(vList);
+  if (vStyle.overflowY === 'auto' || vStyle.overflowY === 'scroll') {
+    return vList as HTMLElement;
+  }
+
+  // 否则向上查找第一个可滚动的祖先
   let el: HTMLElement | null = vList.parentElement;
   while (el) {
     const style = window.getComputedStyle(el);
@@ -82,6 +89,19 @@ async function scrollCollectAll(): Promise<Message[]> {
     return collectMessages();
   }
 
+  // ── 打印模式：所有消息已渲染，快速扫一遍 ──
+  const vList = document.querySelector('.ds-virtual-list');
+  if (vList?.classList.contains('ds-virtual-list--printable')) {
+    toast('检测到打印模式，快速收集…');
+    // 先滚到顶部，再滚到底部，确保所有懒加载内容已触发
+    container.scrollTop = 0;
+    await sleep(SCROLL_CONFIG.scrollDelay / 2);
+    container.scrollTop = container.scrollHeight;
+    await sleep(SCROLL_CONFIG.scrollDelay / 2);
+    return collectMessages();
+  }
+
+  // ── 正常模式：分阶段滚动加载 ──
   let prevCount = 0;
   let emptyStreak = 0;
 
