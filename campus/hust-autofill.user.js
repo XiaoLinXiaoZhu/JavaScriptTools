@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                HUST华中科技大学军理线上作业自动填充助手
 // @namespace           https://github.com/XiaoLinXiaoZhu/HUST-
-// @version             0.1
+// @version             0.1.1
 // @description         HUST military science online homework autofill assistant
 // @author              XLXZ
 // @license             MIT

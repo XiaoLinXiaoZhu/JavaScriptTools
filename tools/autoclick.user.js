@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name                AutoTool_Download
 // @namespace           https://github.com/XiaoLinXiaoZhu/JavaScriptTools
-// @version             0.4
+// @version             0.4.1
 // @description         XLXZ's 自动下载 小工具，本质上是匹配特殊内容并且模拟点击
 // @author              XLXZ
 // @license             MIT
 // @match               https://www.sunwenjie.top/article/*
 // @match               *://*/*
 // @grant               none
-// @downloadURL         https://raw.githubusercontent.com/XiaoLinXiaoZhu/JavaScriptTools/main/dist/AutoClick.js
-// @updateURL           https://raw.githubusercontent.com/XiaoLinXiaoZhu/JavaScriptTools/main/dist/AutoClick.js
+// @downloadURL         https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js
+// @updateURL           https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js
 // ==/UserScript==
 
 "use strict";

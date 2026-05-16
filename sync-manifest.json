@@ -5,7 +5,7 @@
     "category": "tools",
     "distPath": "tools/asmr-download.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/asmr-download.user.js",
-    "version": "0.1"
+    "version": "0.1.1"
   },
   {
     "name": "autoclick",
@@ -13,7 +13,7 @@
     "category": "tools",
     "distPath": "tools/autoclick.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js",
-    "version": "0.4"
+    "version": "0.4.1"
   },
   {
     "name": "bahamut-auto",
@@ -21,7 +21,7 @@
     "category": "entertainment",
     "distPath": "entertainment/bahamut-auto.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js",
-    "version": "2.0"
+    "version": "2.0.1"
   },
   {
     "name": "better-iwara",
@@ -29,7 +29,7 @@
     "category": "entertainment",
     "distPath": "entertainment/better-iwara.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/better-iwara.user.js",
-    "version": "0.1"
+    "version": "0.1.1"
   },
   {
     "name": "bilibili-block",
@@ -37,9 +37,9 @@
     "category": "bilibili",
     "distPath": "bilibili/bilibili-block.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js",
-    "version": "3.0",
-    "greasyforkId": 467384,
-    "greasyforkUrl": "https://greasyfork.org/scripts/467384"
+    "version": "3.0.1",
+    "greasyforkId": 497929,
+    "greasyforkUrl": "https://greasyfork.org/scripts/497929"
   },
   {
     "name": "evaluation-auto",
@@ -47,7 +47,7 @@
     "category": "campus",
     "distPath": "campus/evaluation-auto.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js",
-    "version": "1.0"
+    "version": "1.0.1"
   },
   {
     "name": "hexo-image-redirect",
@@ -62,7 +62,7 @@
     "category": "campus",
     "distPath": "campus/hust-autofill.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js",
-    "version": "0.1"
+    "version": "0.1.1"
   },
   {
     "name": "obsidian-cardview",
