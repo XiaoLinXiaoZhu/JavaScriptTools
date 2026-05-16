@@ -169,7 +169,7 @@ function setupPanel() {
     content: buildPanelHTML(),
     width: 340,
     height: 200,
-    position: { x: window.innerWidth - 300, y: window.innerHeight - 300 },
+    position: { x: window.innerWidth - 360, y: window.innerHeight - 320 },
   });
 
   panel.show();
