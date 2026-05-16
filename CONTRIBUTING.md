@@ -118,3 +118,73 @@ Webhook 已配置，push 到仓库后 GreasyFork 会即时同步。
 - **GitHub Pages**（用户安装）：`https://xiaolinxiaozhu.github.io/JavaScriptTools/{category}/{script-name}.user.js`
 - **Raw GitHub**（GreasyFork 同步）：`https://raw.githubusercontent.com/XiaoLinXiaoZhu/JavaScriptTools/gh-pages/{category}/{script-name}.user.js`
 - 构建系统会自动将 GitHub Pages URL 注入为 `@downloadURL` 和 `@updateURL`（无需手写）
+
+## 组件库开发（packages/components）
+
+组件库为油猴脚本提供通用 UI 组件（Toast、ConfigPanel、FloatingPanel 等），基于 Vue 3 构建。
+
+### 目录结构
+
+```
+packages/components/
+├── src/
+│   ├── index.ts            # 导出入口
+│   ├── toast/              # Toast 消息组件
+│   ├── config-panel/       # 配置面板组件
+│   └── floating-panel/     # 可拖拽浮动面板
+├── dist/
+│   └── index.js            # 构建产物（单文件 bundle）
+├── package.json
+└── vite.config.ts
+```
+
+### 开发流程
+
+```bash
+# 1. 进入组件库目录
+cd packages/components
+
+# 2. 启动开发服务器（vite 热重载）
+npm run dev
+
+# 3. 修改组件源码，浏览器自动刷新
+
+# 4. 构建产物
+npm run build
+# 输出到 dist/index.js，供脚本构建时通过 @xlxz/components 别名引用
+
+# 5. 类型检查
+npm run typecheck
+```
+
+### 在脚本中使用组件
+
+构建系统已配置 `@xlxz/components` 别名，脚本中可直接导入：
+
+```ts
+import { showToast, createConfigPanel, createFloatingPanel } from '@xlxz/components';
+
+// Toast 消息
+showToast('操作成功', { type: 'success', duration: 3000 });
+
+// 配置面板
+createConfigPanel({
+  title: '设置',
+  fields: [
+    { key: 'threshold', label: '阈值', type: 'slider', min: 0, max: 100, value: 30 },
+  ],
+  onSave: (values) => { /* ... */ },
+});
+```
+
+构建时 esbuild 会将组件库代码内联打包进脚本，无需用户额外安装依赖。
+
+### 预览应用（apps/preview）
+
+`apps/preview` 提供组件的可视化预览页面。注意当前 preview 的 alias 指向 `dist/`，修改组件源码后需要先执行 `npm run build` 再刷新 preview 页面。
+
+### 样式规范
+
+- 所有组件使用 `.xlxz-root` 作为命名空间前缀，避免与宿主页面样式冲突
+- 基础样式定义在 `packages/styles/base.css`，组件样式在 `packages/styles/components/`
+- 样式通过 `?raw` 导入为字符串，运行时动态注入 `<style>` 标签
