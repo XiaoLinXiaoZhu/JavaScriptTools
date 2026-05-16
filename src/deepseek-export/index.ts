@@ -1,27 +1,20 @@
 export {};
 
+import NumberFlow, { styles as numberFlowStyles } from 'number-flow';
+import { showToast } from '@xlxz/components/toast';
+import { createFloatingPanel } from '@xlxz/components/floating-panel';
 import type { Message } from './types';
-import { BUTTON_CSS, SCROLL_CONFIG, buildMarkdown } from './config';
+import { buildMarkdown, SCROLL_CONFIG } from './config';
 
-// ─── 注入样式 ────────────────────────────────
-const style = document.createElement('style');
-style.textContent = BUTTON_CSS;
-document.head.appendChild(style);
-
-// ─── Toast 提示 ────────────────────────────────
-function toast(msg: string, warn = false) {
-  const el = document.createElement('div');
-  el.className = 'dse-toast' + (warn ? ' dse-toast--warn' : '');
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 2500);
-}
+// ─── 注入 number-flow 样式 ───────────────────
+const nfStyle = document.createElement('style');
+nfStyle.textContent = numberFlowStyles.join('\n');
+document.head.appendChild(nfStyle);
 
 // ─── 消息提取 ────────────────────────────────
 function extractMessage(el: Element): Message | null {
   const hasMarkdown = el.querySelector('.ds-markdown');
   if (hasMarkdown) {
-    // AI 消息
     const thinkBlock = el.querySelector('.ds-think-content');
     let think: string | undefined;
     if (thinkBlock) {
@@ -34,7 +27,6 @@ function extractMessage(el: Element): Message | null {
     const text = respMd?.textContent?.trim() ?? '';
     return { type: 'ai', text, think };
   } else {
-    // 用户消息：文本在 ds-message 下的第一个 div
     const msgDiv = el.querySelector('.ds-message');
     const textDiv = msgDiv?.querySelector('div');
     const text = textDiv?.textContent?.trim() ?? '';
@@ -42,7 +34,6 @@ function extractMessage(el: Element): Message | null {
   }
 }
 
-/** 收集当前页面上所有可见的消息，返回 key → Message 的 Map */
 function collectMessages(): Map<string, Message> {
   const items = document.querySelectorAll('[data-virtual-list-item-key]');
   const map = new Map<string, Message>();
@@ -55,18 +46,14 @@ function collectMessages(): Map<string, Message> {
   return map;
 }
 
-// ─── 滚动收集 ────────────────────────────────
+// ─── 滚动容器 ────────────────────────────────
 function findScrollContainer(): HTMLElement | null {
   const vList = document.querySelector('.ds-virtual-list');
   if (!vList) return null;
-
-  // 检查虚拟列表自身是否可滚动
   const vStyle = window.getComputedStyle(vList);
   if (vStyle.overflowY === 'auto' || vStyle.overflowY === 'scroll') {
     return vList as HTMLElement;
   }
-
-  // 否则向上查找第一个可滚动的祖先
   let el: HTMLElement | null = vList.parentElement;
   while (el) {
     const style = window.getComputedStyle(el);
@@ -80,16 +67,196 @@ function sleep(ms: number): Promise<void> {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// ─── 下载 ────────────────────────────────────
+function downloadFile(content: string, filename: string, mime: string) {
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─── 面板内容构建 ────────────────────────────
+let panel: ReturnType<typeof createFloatingPanel> | null = null;
+let scrollNF: InstanceType<typeof NumberFlow> | null = null;
+let countNF: InstanceType<typeof NumberFlow> | null = null;
+
+function buildPanelHTML(): string {
+  return `
+<div style="display:flex;flex-direction:column;gap:12px;align-items:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <div style="display:flex;gap:24px;width:100%;justify-content:center">
+    <div style="text-align:center">
+      <div style="font-size:11px;color:#999;margin-bottom:4px">滚动进度</div>
+      <span style="font-size:13px;color:#666">0 / 0</span>
+    </div>
+    <div style="text-align:center">
+      <div style="font-size:11px;color:#999;margin-bottom:4px">已收集</div>
+      <span style="font-size:13px;color:#666">0 条</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%">
+    <button id="dse-btn-md" class="dse-panel-btn dse-panel-btn--primary" style="flex:1">导出 Markdown</button>
+    <button id="dse-btn-json" class="dse-panel-btn" style="flex:1">导出 JSON</button>
+  </div>
+</div>`;
+}
+
+const PANEL_CSS = `
+.dse-panel-btn {
+  padding: 8px 16px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.dse-panel-btn:hover { border-color: #4d6bfe; color: #4d6bfe; }
+.dse-panel-btn--primary {
+  background: #4d6bfe;
+  border-color: #4d6bfe;
+  color: #fff;
+}
+.dse-panel-btn--primary:hover { background: #3d5be5; color: #fff; }
+.dse-panel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.dse-dashboard {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+  justify-content: center;
+}
+.dse-dashboard__item {
+  text-align: center;
+}
+.dse-dashboard__label {
+  font-size: 11px;
+  color: #999;
+  margin-bottom: 4px;
+}
+.dse-dashboard__value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  font-variant-numeric: tabular-nums;
+}
+.dse-dashboard__value number-flow {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  font-variant-numeric: tabular-nums;
+}
+.dse-dashboard__unit {
+  font-size: 11px;
+  color: #999;
+  margin-left: 2px;
+}
+`;
+
+function setupPanel() {
+  // 注入面板样式
+  const s = document.createElement('style');
+  s.textContent = PANEL_CSS;
+  document.head.appendChild(s);
+
+  panel = createFloatingPanel({
+    title: 'DeepSeek 导出',
+    content: buildPanelHTML(),
+    width: 280,
+    height: 160,
+    position: { x: window.innerWidth - 300, y: window.innerHeight - 300 },
+  });
+
+  panel.show();
+
+  // 绑定按钮事件（延迟到 DOM 挂载）
+  setTimeout(() => bindPanelButtons(), 100);
+}
+
+function updateDashboard(scrollCur: number, scrollMax: number, msgCount: number) {
+  if (!panel) return;
+  panel.setContent(`
+<div style="display:flex;flex-direction:column;gap:12px;align-items:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <div class="dse-dashboard">
+    <div class="dse-dashboard__item">
+      <div class="dse-dashboard__label">滚动进度</div>
+      <number-flow id="dse-nf-scroll" class="dse-dashboard__value">${scrollCur}</number-flow><span class="dse-dashboard__unit">/ ${scrollMax}</span>
+    </div>
+    <div class="dse-dashboard__item">
+      <div class="dse-dashboard__label">已收集</div>
+      <number-flow id="dse-nf-count" class="dse-dashboard__value">${msgCount}</number-flow><span class="dse-dashboard__unit">条</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;width:100%">
+    <button id="dse-btn-md" class="dse-panel-btn dse-panel-btn--primary" style="flex:1" disabled>导出 Markdown</button>
+    <button id="dse-btn-json" class="dse-panel-btn" style="flex:1" disabled>导出 JSON</button>
+  </div>
+</div>`);
+}
+
+function bindPanelButtons() {
+  const btnMd = document.querySelector('#dse-btn-md') as HTMLButtonElement | null;
+  const btnJson = document.querySelector('#dse-btn-json') as HTMLButtonElement | null;
+
+  btnMd?.addEventListener('click', () => doExport('md'));
+  btnJson?.addEventListener('click', () => doExport('json'));
+}
+
+type ExportFormat = 'md' | 'json';
+
+async function doExport(format: ExportFormat) {
+  const btnMd = document.querySelector('#dse-btn-md') as HTMLButtonElement | null;
+  const btnJson = document.querySelector('#dse-btn-json') as HTMLButtonElement | null;
+  if (btnMd) btnMd.disabled = true;
+  if (btnJson) btnJson.disabled = true;
+
+  showToast('正在滚动收集全部对话消息…', { type: 'info', duration: 2000 });
+
+  const messages = await scrollCollectAll();
+
+  if (messages.length === 0) {
+    showToast('未找到任何消息', { type: 'error' });
+    if (btnMd) btnMd.disabled = false;
+    if (btnJson) btnJson.disabled = false;
+    return;
+  }
+
+  const title = document.title.replace(/ - DeepSeek$/, '') || 'DeepSeek Chat';
+
+  if (format === 'md') {
+    const md = buildMarkdown(messages, title);
+    downloadFile(md, `${title}.md`, 'text/markdown;charset=utf-8');
+  } else {
+    const json = JSON.stringify(messages, null, 2);
+    downloadFile(json, `${title}.json`, 'application/json;charset=utf-8');
+  }
+
+  showToast(`已导出 ${messages.length} 条消息`, { type: 'success' });
+
+  if (btnMd) btnMd.disabled = false;
+  if (btnJson) btnJson.disabled = false;
+}
+
+// ─── 滚动收集（带实时看板更新） ──────────────
 async function scrollCollectAll(): Promise<Message[]> {
   const container = findScrollContainer();
   if (!container) {
-    toast('未找到滚动容器，将仅导出当前可见消息', true);
+    showToast('未找到滚动容器，将仅导出当前可见消息', { type: 'warning' });
     return [...collectMessages().values()];
   }
 
   const all = new Map<string, Message>();
+  const maxScroll = container.scrollHeight - container.clientHeight;
 
-  // ── Phase 1: 回顶加载历史 ────────────────────
+  // 更新看板初始状态
+  updateDashboard(0, maxScroll, 0);
+
+  // Phase 1: 回顶加载历史
   for (let i = 0; i < SCROLL_CONFIG.maxScrolls; i++) {
     container.scrollTop = 0;
     await sleep(SCROLL_CONFIG.scrollDelay);
@@ -103,11 +270,12 @@ async function scrollCollectAll(): Promise<Message[]> {
       }
     }
 
-    // 没有新 key 出现 → 历史已加载完毕
+    updateDashboard(container.scrollTop, maxScroll, all.size);
+
     if (newKeys === 0) break;
   }
 
-  // ── Phase 2: 逐步下滚收集 ────────────────────
+  // Phase 2: 逐步下滚收集
   let emptyStreak = 0;
 
   for (let i = 0; i < SCROLL_CONFIG.maxScrolls; i++) {
@@ -120,20 +288,20 @@ async function scrollCollectAll(): Promise<Message[]> {
       }
     }
 
+    updateDashboard(container.scrollTop, maxScroll, all.size);
+
     if (newKeys > 0) {
       emptyStreak = 0;
     } else {
       emptyStreak++;
     }
 
-    // 检查是否已到底部
     const atBottom =
       container.scrollTop + container.clientHeight >=
       container.scrollHeight - 10;
 
     if (atBottom && emptyStreak >= SCROLL_CONFIG.retryOnEmpty) break;
 
-    // 50% 视口小步长向下滚动
     container.scrollTop += container.clientHeight * 0.5;
     await sleep(SCROLL_CONFIG.scrollDelay);
   }
@@ -141,55 +309,9 @@ async function scrollCollectAll(): Promise<Message[]> {
   return [...all.values()];
 }
 
-// ─── 下载 ────────────────────────────────────
-function downloadMarkdown(md: string, filename: string) {
-  const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-// ─── 导出按钮 ────────────────────────────────
-function createExportButton() {
-  const btn = document.createElement('button');
-  btn.className = 'dse-btn';
-  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1a.5.5 0 0 1 .5.5v8.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 1 1 .708-.708L7.5 10.293V1.5A.5.5 0 0 1 8 1zM2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" fill="currentColor"/></svg>导出`;
-  btn.title = '导出完整对话记录 (Markdown)';
-
-  btn.addEventListener('click', async () => {
-    btn.classList.add('dse-btn--loading');
-    btn.textContent = '收集消息中…';
-    toast('正在滚动收集全部对话消息…');
-
-    const messages = await scrollCollectAll();
-
-    if (messages.length === 0) {
-      toast('未找到任何消息', true);
-      btn.classList.remove('dse-btn--loading');
-      btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1a.5.5 0 0 1 .5.5v8.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 1 1 .708-.708L7.5 10.293V1.5A.5.5 0 0 1 8 1zM2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" fill="currentColor"/></svg>导出`;
-      return;
-    }
-
-    const title = document.title.replace(/ - DeepSeek$/, '') || 'DeepSeek Chat';
-    const md = buildMarkdown(messages, title);
-    downloadMarkdown(md, `${title}.md`);
-
-    toast(`已导出 ${messages.length} 条消息`);
-    btn.classList.remove('dse-btn--loading');
-    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1a.5.5 0 0 1 .5.5v8.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 1 1 .708-.708L7.5 10.293V1.5A.5.5 0 0 1 8 1zM2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" fill="currentColor"/></svg>导出`;
-  });
-
-  document.body.appendChild(btn);
-}
-
 // ─── 入口 ─────────────────────────────────────
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', createExportButton);
+  document.addEventListener('DOMContentLoaded', setupPanel);
 } else {
-  createExportButton();
+  setupPanel();
 }
