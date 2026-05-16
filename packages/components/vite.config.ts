@@ -30,6 +30,18 @@ const entries = {
   'animated-slider': resolve(__dirname, 'src/animated-slider/index.ts'),
 };
 
+// 如果指定了 BUILD_ENTRY 环境变量，则使用单入口模式（产物无共享 chunk）
+const buildEntry = process.env.BUILD_ENTRY?.trim();
+const libConfig = buildEntry
+  ? {
+      entry: resolve(__dirname, `src/${buildEntry}/index.ts`),
+      formats: ['es'] as const,
+    }
+  : {
+      entry: entries,
+      formats: ['es'] as const,
+    };
+
 export default defineConfig({
   plugins: [vue(), stylesRawPlugin()],
   define: {
@@ -39,17 +51,12 @@ export default defineConfig({
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
   },
   build: {
-    lib: {
-      entry: entries,
-      formats: ['es'],
-    },
+    lib: libConfig,
     outDir: 'dist',
     emptyDirBeforeWrite: true,
     rollupOptions: {
       output: {
-        // 禁用 chunk 分割：每个入口点生成独立自包含文件
-        manualChunks: undefined,
-        inlineDynamicImports: false,
+        entryFileNames: buildEntry ? `${buildEntry}.js` : '[name].js',
       },
     },
   },
