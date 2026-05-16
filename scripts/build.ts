@@ -202,6 +202,10 @@ async function buildUserScript(entry: ScriptEntry): Promise<void> {
     loader: { '.css': 'text' },
     alias: {
       '@shared': path.join(SRC_DIR, 'shared'),
+      '@xlxz/components/toast': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'toast.js'),
+      '@xlxz/components/config-panel': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'config-panel.js'),
+      '@xlxz/components/floating-panel': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'floating-panel.js'),
+      '@xlxz/components/animated-slider': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'animated-slider.js'),
       '@xlxz/components': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'index.js'),
     },
   });
@@ -239,6 +243,10 @@ async function buildPlainScript(entry: ScriptEntry): Promise<void> {
     loader: { '.css': 'text' },
     alias: {
       '@shared': path.join(SRC_DIR, 'shared'),
+      '@xlxz/components/toast': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'toast.js'),
+      '@xlxz/components/config-panel': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'config-panel.js'),
+      '@xlxz/components/floating-panel': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'floating-panel.js'),
+      '@xlxz/components/animated-slider': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'animated-slider.js'),
       '@xlxz/components': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'index.js'),
     },
   });
@@ -277,6 +285,10 @@ async function buildNodeScript(entry: ScriptEntry): Promise<void> {
     external,
     alias: {
       '@shared': path.join(SRC_DIR, 'shared'),
+      '@xlxz/components/toast': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'toast.js'),
+      '@xlxz/components/config-panel': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'config-panel.js'),
+      '@xlxz/components/floating-panel': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'floating-panel.js'),
+      '@xlxz/components/animated-slider': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'animated-slider.js'),
       '@xlxz/components': path.resolve(import.meta.dirname, '..', 'packages', 'components', 'dist', 'index.js'),
     },
   });

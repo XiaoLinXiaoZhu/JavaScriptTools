@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 
-// Custom plugin to handle @xlxz/styles CSS imports as raw strings
+// Custom plugin to handle styles CSS imports as raw strings
 function stylesRawPlugin() {
   return {
     name: 'xlxz-styles-raw',
@@ -21,19 +21,35 @@ function stylesRawPlugin() {
   };
 }
 
+// 入口点定义：每个组件独立打包
+const entries = {
+  index: resolve(__dirname, 'src/index.ts'),
+  toast: resolve(__dirname, 'src/toast/index.ts'),
+  'config-panel': resolve(__dirname, 'src/config-panel/index.ts'),
+  'floating-panel': resolve(__dirname, 'src/floating-panel/index.ts'),
+  'animated-slider': resolve(__dirname, 'src/animated-slider/index.ts'),
+};
+
 export default defineConfig({
   plugins: [vue(), stylesRawPlugin()],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production'),
+    __VUE_OPTIONS_API__: 'false',
+    __VUE_PROD_DEVTOOLS__: 'false',
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
+  },
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: entries,
       formats: ['es'],
-      fileName: 'index',
     },
     outDir: 'dist',
     emptyDirBeforeWrite: true,
     rollupOptions: {
       output: {
-        inlineDynamicImports: true,
+        // 禁用 chunk 分割：每个入口点生成独立自包含文件
+        manualChunks: undefined,
+        inlineDynamicImports: false,
       },
     },
   },

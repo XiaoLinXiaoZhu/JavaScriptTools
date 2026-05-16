@@ -1,5 +1,6 @@
 import style from './style.css';
-import { createAnimatedSlider, showToast } from '@xlxz/components';
+import { showToast } from '@xlxz/components/toast';
+import { createAnimatedSlider } from '@xlxz/components/animated-slider';
 
 // --- 样式注入 ---
 GM_addStyle(style);

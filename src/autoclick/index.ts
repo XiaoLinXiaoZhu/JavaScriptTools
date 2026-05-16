@@ -1,5 +1,5 @@
 export {};
-import { showToast } from '@xlxz/components';
+import { showToast } from '@xlxz/components/toast';
 
 function openURL(url: string): void {
   const aLabel = document.createElement('a');
