@@ -42,19 +42,17 @@ function extractMessage(el: Element): Message | null {
   }
 }
 
-/** 收集当前页面上所有可见的消息（去重，按 key 排序） */
-function collectMessages(): Message[] {
+/** 收集当前页面上所有可见的消息，返回 key → Message 的 Map */
+function collectMessages(): Map<string, Message> {
   const items = document.querySelectorAll('[data-virtual-list-item-key]');
-  const seen = new Set<string>();
-  const messages: Message[] = [];
+  const map = new Map<string, Message>();
   for (const el of items) {
     const key = el.getAttribute('data-virtual-list-item-key')!;
-    if (seen.has(key)) continue;
-    seen.add(key);
+    if (map.has(key)) continue;
     const msg = extractMessage(el);
-    if (msg) messages.push(msg);
+    if (msg) map.set(key, msg);
   }
-  return messages;
+  return map;
 }
 
 // ─── 滚动收集 ────────────────────────────────
@@ -86,61 +84,61 @@ async function scrollCollectAll(): Promise<Message[]> {
   const container = findScrollContainer();
   if (!container) {
     toast('未找到滚动容器，将仅导出当前可见消息', true);
-    return collectMessages();
+    return [...collectMessages().values()];
   }
 
-  // ── 打印模式：所有消息已渲染，快速扫一遍 ──
-  const vList = document.querySelector('.ds-virtual-list');
-  if (vList?.classList.contains('ds-virtual-list--printable')) {
-    toast('检测到打印模式，快速收集…');
-    // 先滚到顶部，再滚到底部，确保所有懒加载内容已触发
+  const all = new Map<string, Message>();
+
+  // ── Phase 1: 回顶加载历史 ────────────────────
+  for (let i = 0; i < SCROLL_CONFIG.maxScrolls; i++) {
     container.scrollTop = 0;
-    await sleep(SCROLL_CONFIG.scrollDelay / 2);
-    container.scrollTop = container.scrollHeight;
-    await sleep(SCROLL_CONFIG.scrollDelay / 2);
-    return collectMessages();
+    await sleep(SCROLL_CONFIG.scrollDelay);
+
+    const current = collectMessages();
+    let newKeys = 0;
+    for (const [key, msg] of current) {
+      if (!all.has(key)) {
+        all.set(key, msg);
+        newKeys++;
+      }
+    }
+
+    // 没有新 key 出现 → 历史已加载完毕
+    if (newKeys === 0) break;
   }
 
-  // ── 正常模式：分阶段滚动加载 ──
-  let prevCount = 0;
+  // ── Phase 2: 逐步下滚收集 ────────────────────
   let emptyStreak = 0;
 
-  // 阶段 1：滚动到顶部，加载所有历史消息
   for (let i = 0; i < SCROLL_CONFIG.maxScrolls; i++) {
-    container.scrollTop = 0;
-    await sleep(SCROLL_CONFIG.scrollDelay);
+    const current = collectMessages();
+    let newKeys = 0;
+    for (const [key, msg] of current) {
+      if (!all.has(key)) {
+        all.set(key, msg);
+        newKeys++;
+      }
+    }
 
-    const msgs = collectMessages();
-    if (msgs.length > prevCount) {
-      prevCount = msgs.length;
+    if (newKeys > 0) {
       emptyStreak = 0;
     } else {
       emptyStreak++;
-      if (emptyStreak >= SCROLL_CONFIG.retryOnEmpty + 1) break;
     }
-  }
 
-  // 阶段 2：逐步向下滚动，确保所有消息都被渲染
-  emptyStreak = 0;
-  for (let i = 0; i < SCROLL_CONFIG.maxScrolls; i++) {
-    container.scrollTop += container.clientHeight * 0.7;
+    // 检查是否已到底部
+    const atBottom =
+      container.scrollTop + container.clientHeight >=
+      container.scrollHeight - 10;
+
+    if (atBottom && emptyStreak >= SCROLL_CONFIG.retryOnEmpty) break;
+
+    // 50% 视口小步长向下滚动
+    container.scrollTop += container.clientHeight * 0.5;
     await sleep(SCROLL_CONFIG.scrollDelay);
-
-    const msgs = collectMessages();
-    if (msgs.length > prevCount) {
-      prevCount = msgs.length;
-      emptyStreak = 0;
-    } else {
-      emptyStreak++;
-      // 同时检查是否已经滚到底部
-      const atBottom =
-        container.scrollTop + container.clientHeight >=
-        container.scrollHeight - 10;
-      if (atBottom && emptyStreak >= SCROLL_CONFIG.retryOnEmpty) break;
-    }
   }
 
-  return collectMessages();
+  return [...all.values()];
 }
 
 // ─── 下载 ────────────────────────────────────
