@@ -1,10 +1,11 @@
 [
   {
-    "name": "hexo-image-redirect",
-    "mode": "node",
-    "category": "hexo",
-    "distPath": "hexo/hexo-image-redirect.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/hexo/hexo-image-redirect.js"
+    "name": "fufugal-rating-filter",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/fufugal-rating-filter.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/fufugal-rating-filter.user.js",
+    "version": "0.3.0"
   },
   {
     "name": "bahamut-auto",
@@ -13,6 +14,14 @@
     "distPath": "entertainment/bahamut-auto.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js",
     "version": "2.0.1"
+  },
+  {
+    "name": "autoclick",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/autoclick.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js",
+    "version": "0.5.0"
   },
   {
     "name": "bilibili-search-filter",
@@ -30,11 +39,19 @@
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/obsidian/cardview.js"
   },
   {
-    "name": "asmr-download",
+    "name": "evaluation-auto",
     "mode": "userscript",
-    "category": "tools",
-    "distPath": "tools/asmr-download.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/asmr-download.user.js",
+    "category": "campus",
+    "distPath": "campus/evaluation-auto.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js",
+    "version": "1.0.1"
+  },
+  {
+    "name": "hust-autofill",
+    "mode": "userscript",
+    "category": "campus",
+    "distPath": "campus/hust-autofill.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js",
     "version": "0.1.1"
   },
   {
@@ -46,11 +63,26 @@
     "version": "0.1.1"
   },
   {
-    "name": "hust-autofill",
+    "name": "deepseek-export",
     "mode": "userscript",
-    "category": "campus",
-    "distPath": "campus/hust-autofill.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js",
+    "category": "tools",
+    "distPath": "tools/deepseek-export.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/deepseek-export.user.js",
+    "version": "0.1.0"
+  },
+  {
+    "name": "hexo-image-redirect",
+    "mode": "node",
+    "category": "hexo",
+    "distPath": "hexo/hexo-image-redirect.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/hexo/hexo-image-redirect.js"
+  },
+  {
+    "name": "asmr-download",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/asmr-download.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/asmr-download.user.js",
     "version": "0.1.1"
   },
   {
@@ -62,29 +94,5 @@
     "version": "3.0.1",
     "greasyforkId": 497929,
     "greasyforkUrl": "https://greasyfork.org/scripts/497929"
-  },
-  {
-    "name": "autoclick",
-    "mode": "userscript",
-    "category": "tools",
-    "distPath": "tools/autoclick.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/autoclick.user.js",
-    "version": "0.5.0"
-  },
-  {
-    "name": "evaluation-auto",
-    "mode": "userscript",
-    "category": "campus",
-    "distPath": "campus/evaluation-auto.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js",
-    "version": "1.0.1"
-  },
-  {
-    "name": "deepseek-export",
-    "mode": "userscript",
-    "category": "tools",
-    "distPath": "tools/deepseek-export.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/deepseek-export.user.js",
-    "version": "0.1.0"
   }
 ]
