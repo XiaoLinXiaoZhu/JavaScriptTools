@@ -8,6 +8,14 @@
     "version": "0.3.0"
   },
   {
+    "name": "auto-expand",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/auto-expand.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/auto-expand.user.js",
+    "version": "0.1.0"
+  },
+  {
     "name": "bahamut-auto",
     "mode": "userscript",
     "category": "entertainment",
@@ -71,11 +79,35 @@
     "version": "0.1.0"
   },
   {
+    "name": "csdn-clean",
+    "mode": "userscript",
+    "category": "tools",
+    "distPath": "tools/csdn-clean.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/csdn-clean.user.js",
+    "version": "0.1.0"
+  },
+  {
     "name": "hexo-image-redirect",
     "mode": "node",
     "category": "hexo",
     "distPath": "hexo/hexo-image-redirect.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/hexo/hexo-image-redirect.js"
+  },
+  {
+    "name": "link-jump",
+    "mode": "userscript",
+    "category": "navigation",
+    "distPath": "navigation/link-jump.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/navigation/link-jump.user.js",
+    "version": "0.1.0"
+  },
+  {
+    "name": "search-helper",
+    "mode": "userscript",
+    "category": "search",
+    "distPath": "search/search-helper.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/search/search-helper.user.js",
+    "version": "0.1.0"
   },
   {
     "name": "asmr-download",
@@ -94,5 +126,13 @@
     "version": "3.0.1",
     "greasyforkId": 497929,
     "greasyforkUrl": "https://greasyfork.org/scripts/497929"
+  },
+  {
+    "name": "zhihu-helper",
+    "mode": "userscript",
+    "category": "social",
+    "distPath": "social/zhihu-helper.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/social/zhihu-helper.user.js",
+    "version": "0.1.0"
   }
 ]
