@@ -44,3 +44,4 @@ apps/preview/node_modules/
 # ─── 运行时产物 ────────────────────────────────
 .temp/
 _n0n_*
+.n0n/config.toml
