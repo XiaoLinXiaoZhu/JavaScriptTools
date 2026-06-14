@@ -88,11 +88,11 @@ src/my-script/changelog/
 ## 常用命令
 
 ```bash
-npm run build          # 构建所有脚本到 dist/
-npm run build:watch    # 监听模式，修改后自动重建
-npm run typecheck      # TypeScript 类型检查
-npm run manifest       # 生成 sync-manifest.json
-npm run clean          # 清理 dist/
+bun run build          # 构建所有脚本到 dist/
+bun run build:watch    # 监听模式，修改后自动重建
+bun run typecheck      # TypeScript 类型检查
+bun run manifest       # 生成 sync-manifest.json
+bun run clean          # 清理 dist/
 ```
 
 ## 发布流程
@@ -145,16 +145,16 @@ packages/components/
 cd packages/components
 
 # 2. 启动开发服务器（vite 热重载）
-npm run dev
+bun run dev
 
 # 3. 修改组件源码，浏览器自动刷新
 
 # 4. 构建产物
-npm run build
+bun run build
 # 输出到 dist/index.js，供脚本构建时通过 @xlxz/components 别名引用
 
 # 5. 类型检查
-npm run typecheck
+bun run typecheck
 ```
 
 ### 在脚本中使用组件
@@ -181,7 +181,7 @@ createConfigPanel({
 
 ### 预览应用（apps/preview）
 
-`apps/preview` 提供组件的可视化预览页面。注意当前 preview 的 alias 指向 `dist/`，修改组件源码后需要先执行 `npm run build` 再刷新 preview 页面。
+`apps/preview` 提供组件的可视化预览页面。注意当前 preview 的 alias 指向 `dist/`，修改组件源码后需要先执行 `bun run build` 再刷新 preview 页面。
 
 ### 样式规范
 
