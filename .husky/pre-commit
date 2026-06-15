@@ -1,0 +1,2 @@
+bun run scripts/readme-table.ts
+git add readme.md

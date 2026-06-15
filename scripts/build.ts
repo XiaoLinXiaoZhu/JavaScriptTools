@@ -373,6 +373,11 @@ async function buildAll(entries: ScriptEntry[]): Promise<void> {
   // 生成脚本文档
   console.log('📄 生成脚本文档...\n');
   await processAllDocs(entries);
+
+  // 更新 README.md 脚本列表表格
+  console.log('📋 更新 README.md 脚本列表...\n');
+  const { updateReadmeTable } = await import('./readme-table');
+  await updateReadmeTable();
 }
 
 async function processAllDocs(entries: ScriptEntry[]): Promise<void> {
