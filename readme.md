@@ -11,7 +11,7 @@
 |------|------|------|
 | [屏蔽B站营销视频和推广视频](src/bilibili-block/) | 屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的 | [GreasyFork](https://greasyfork.org/scripts/497929) \| [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js) |
 | [动画疯自动同意年龄确认，移除广告跳转，广告静音，自动点击跳过广告](src/bahamut-auto/) | 能够动画疯自动同意年龄确认，移除广告跳转，广告静音，自动点击跳过广告……安装即可，自动执行 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js) |
-| [评价表自动选择工具](src/evaluation-auto/) | 自动选择"很好"、"强烈推荐"、"最满意课堂" | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js) |
+| [评价表自动选择工具](src/evaluation-auto/) | 自动选择评分项，支持单个填充和全自动批量评价 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/evaluation-auto.user.js) |
 | [搜索引擎快捷跳转](src/search-helper/) | 在百度、Google、搜狗、360、Bing 等搜索引擎页面添加浮动按钮，一键将当前搜索词切换到其他搜索引擎。 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/search/search-helper.user.js) |
 | [页面自动展开](src/auto-expand/) | 自动展开 CSDN 文章、百度文库、思创等网站被折叠的页面内容，移除展开提示框。 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/auto-expand.user.js) |
 | [知乎问题时间显示](src/zhihu-helper/) | 在知乎问题下的每个回答中显示创建时间和最后编辑时间。 | [GitHub](https://xiaolinxiaozhu.github.io/JavaScriptTools/social/zhihu-helper.user.js) |
