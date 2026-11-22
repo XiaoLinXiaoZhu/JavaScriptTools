@@ -77,6 +77,20 @@ const API_USERDATA = 'https://api.bilibili.com/x/relation/stat?vmid=';
 
 let processedCards = 0;
 
+// ─── 空壳容器兜底样式 ─────────────────────────────────────────
+
+/**
+ * 被清空的 .feed-card 直接退出布局。
+ * :empty 是实时匹配的，B 站把新卡片塞回同一个容器时会自动恢复显示。
+ */
+const EMPTY_WRAPPER_STYLE_ID = 'bili-block-empty-wrapper-style';
+if (!document.getElementById(EMPTY_WRAPPER_STYLE_ID)) {
+  const emptyWrapperStyle = document.createElement('style');
+  emptyWrapperStyle.id = EMPTY_WRAPPER_STYLE_ID;
+  emptyWrapperStyle.textContent = '.feed-card:empty { display: none !important; }';
+  (document.head ?? document.documentElement).appendChild(emptyWrapperStyle);
+}
+
 // ─── 工具函数 ─────────────────────────────────────────────────
 
 function getUid(card: Element): number {
@@ -116,8 +130,58 @@ async function getFollower(uid: number): Promise<number> {
   }
 }
 
+/** 被脚本隐藏的空壳容器标记，供观察器复位 */
+const EMPTY_WRAPPER_ATTR = 'data-bili-block-empty';
+
+/** 当前处于隐藏状态的空壳容器集合 */
+const hiddenWrappers = new Set<Element>();
+
+/**
+ * 空壳容器一旦重新装上卡片，就必须复位 display，
+ * 否则新卡片会一直挂在 display:none 的祖先节点下，来不及进入观察器。
+ * MutationObserver 没有 unobserve，改集合后重建观察目标。
+ */
+const emptyWrapperObserver = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    const wrapper = mutation.target as HTMLElement;
+    if (wrapper.children.length === 0) continue;
+    if (!hiddenWrappers.delete(wrapper)) continue;
+
+    wrapper.style.removeProperty('display');
+    wrapper.removeAttribute(EMPTY_WRAPPER_ATTR);
+
+    emptyWrapperObserver.disconnect();
+    for (const pending of hiddenWrappers) {
+      emptyWrapperObserver.observe(pending, { childList: true });
+    }
+  }
+});
+
+/**
+ * 隐藏已经变空的外层 .feed-card。
+ *
+ * 选择隐藏而非删除，是因为 B 站自己的布局规则依赖 :nth-of-type 给
+ * .feed-card 编号（`.feed-card:nth-of-type(n+12){display:none}`、
+ * `.container.is-version8>*:nth-of-type(n+13){margin-top:24px}`）：
+ * 删掉节点会让后续卡片的序号整体前移，套用到错误的规则上。
+ */
+function hideEmptyWrapper(wrapper: Element | null): void {
+  if (!wrapper) return;
+  if (!wrapper.classList.contains('feed-card')) return;
+  if (wrapper.children.length > 0) return;
+  if (wrapper.hasAttribute(EMPTY_WRAPPER_ATTR)) return;
+
+  (wrapper as HTMLElement).style.display = 'none';
+  wrapper.setAttribute(EMPTY_WRAPPER_ATTR, '');
+  hiddenWrappers.add(wrapper);
+  emptyWrapperObserver.observe(wrapper, { childList: true });
+}
+
 function removeCard(card: Element): void {
+  // 先记住外层包装容器，卡片移除后它就是可能留下的空壳
+  const wrapper = card.parentElement;
   card.remove();
+  hideEmptyWrapper(wrapper);
 }
 
 function removeIfBlockByADBlocker(card: Element): boolean {
