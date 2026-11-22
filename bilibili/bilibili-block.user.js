@@ -4,7 +4,7 @@
 // @name:zh-TW          屏蔽B站营销视频和推广视频
 // @name:en             Block Bilibili's marketing videos and promotional videos
 // @namespace           http://tampermonkey.net/
-// @version             3.0.1
+// @version             3.0.2
 // @description         屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-CN   屏蔽部分B站（bilibili）主页推荐的视频卡片，屏蔽up主粉丝少于一定数量的，屏蔽直播与右侧推广，屏蔽带广告标签的
 // @description:zh-TW   遮罩部分B站（bilibili）主頁推薦的視頻卡片，遮罩up主粉絲少於一定數量的，遮罩直播與右側推廣，遮罩帶廣告標籤的
@@ -87,6 +87,13 @@ ${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(", ") : "\uFF08\u7A7A\uF
   var FILTER_BLOCK_CLASSES = [".floor-single-card"];
   var API_USERDATA = "https://api.bilibili.com/x/relation/stat?vmid=";
   var processedCards = 0;
+  var EMPTY_WRAPPER_STYLE_ID = "bili-block-empty-wrapper-style";
+  if (!document.getElementById(EMPTY_WRAPPER_STYLE_ID)) {
+    const emptyWrapperStyle = document.createElement("style");
+    emptyWrapperStyle.id = EMPTY_WRAPPER_STYLE_ID;
+    emptyWrapperStyle.textContent = ".feed-card:empty { display: none !important; }";
+    (document.head ?? document.documentElement).appendChild(emptyWrapperStyle);
+  }
   function getUid(card) {
     const ownerLink = card.querySelector(
       ".bili-video-card__info--owner"
@@ -127,8 +134,36 @@ ${FILTER_BLOCK_UIDS.length > 0 ? FILTER_BLOCK_UIDS.join(", ") : "\uFF08\u7A7A\uF
     }
   }
   __name(getFollower, "getFollower");
+  var EMPTY_WRAPPER_ATTR = "data-bili-block-empty";
+  var hiddenWrappers = /* @__PURE__ */ new Set();
+  var emptyWrapperObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      const wrapper = mutation.target;
+      if (wrapper.children.length === 0) continue;
+      if (!hiddenWrappers.delete(wrapper)) continue;
+      wrapper.style.removeProperty("display");
+      wrapper.removeAttribute(EMPTY_WRAPPER_ATTR);
+      emptyWrapperObserver.disconnect();
+      for (const pending of hiddenWrappers) {
+        emptyWrapperObserver.observe(pending, { childList: true });
+      }
+    }
+  });
+  function hideEmptyWrapper(wrapper) {
+    if (!wrapper) return;
+    if (!wrapper.classList.contains("feed-card")) return;
+    if (wrapper.children.length > 0) return;
+    if (wrapper.hasAttribute(EMPTY_WRAPPER_ATTR)) return;
+    wrapper.style.display = "none";
+    wrapper.setAttribute(EMPTY_WRAPPER_ATTR, "");
+    hiddenWrappers.add(wrapper);
+    emptyWrapperObserver.observe(wrapper, { childList: true });
+  }
+  __name(hideEmptyWrapper, "hideEmptyWrapper");
   function removeCard(card) {
+    const wrapper = card.parentElement;
     card.remove();
+    hideEmptyWrapper(wrapper);
   }
   __name(removeCard, "removeCard");
   function removeIfBlockByADBlocker(card) {

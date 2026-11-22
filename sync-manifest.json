@@ -1,11 +1,11 @@
 [
   {
-    "name": "better-iwara",
+    "name": "auto-expand",
     "mode": "userscript",
-    "category": "entertainment",
-    "distPath": "entertainment/better-iwara.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/better-iwara.user.js",
-    "version": "0.1.1"
+    "category": "tools",
+    "distPath": "tools/auto-expand.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/auto-expand.user.js",
+    "version": "0.1.0"
   },
   {
     "name": "danbooru-tag-copy",
@@ -24,27 +24,12 @@
     "version": "0.3.0"
   },
   {
-    "name": "hexo-image-redirect",
-    "mode": "node",
-    "category": "hexo",
-    "distPath": "hexo/hexo-image-redirect.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/hexo/hexo-image-redirect.js"
-  },
-  {
-    "name": "search-helper",
+    "name": "hust-autofill",
     "mode": "userscript",
-    "category": "search",
-    "distPath": "search/search-helper.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/search/search-helper.user.js",
-    "version": "0.1.0"
-  },
-  {
-    "name": "bilibili-search-filter",
-    "mode": "userscript",
-    "category": "bilibili",
-    "distPath": "bilibili/bilibili-search-filter.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-search-filter.user.js",
-    "version": "1.1.0"
+    "category": "campus",
+    "distPath": "campus/hust-autofill.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js",
+    "version": "0.1.1"
   },
   {
     "name": "evaluation-auto",
@@ -55,6 +40,24 @@
     "version": "1.2.0"
   },
   {
+    "name": "bilibili-block",
+    "mode": "userscript",
+    "category": "bilibili",
+    "distPath": "bilibili/bilibili-block.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js",
+    "version": "3.0.2",
+    "greasyforkId": 497929,
+    "greasyforkUrl": "https://greasyfork.org/scripts/497929"
+  },
+  {
+    "name": "better-iwara",
+    "mode": "userscript",
+    "category": "entertainment",
+    "distPath": "entertainment/better-iwara.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/better-iwara.user.js",
+    "version": "0.1.1"
+  },
+  {
     "name": "autoclick",
     "mode": "userscript",
     "category": "tools",
@@ -63,11 +66,18 @@
     "version": "0.5.0"
   },
   {
-    "name": "link-jump",
+    "name": "obsidian-cardview",
+    "mode": "plain",
+    "category": "obsidian",
+    "distPath": "obsidian/cardview.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/obsidian/cardview.js"
+  },
+  {
+    "name": "deepseek-export",
     "mode": "userscript",
-    "category": "navigation",
-    "distPath": "navigation/link-jump.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/navigation/link-jump.user.js",
+    "category": "tools",
+    "distPath": "tools/deepseek-export.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/deepseek-export.user.js",
     "version": "0.1.0"
   },
   {
@@ -77,14 +87,6 @@
     "distPath": "entertainment/bahamut-auto.user.js",
     "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/entertainment/bahamut-auto.user.js",
     "version": "2.0.1"
-  },
-  {
-    "name": "hust-autofill",
-    "mode": "userscript",
-    "category": "campus",
-    "distPath": "campus/hust-autofill.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/campus/hust-autofill.user.js",
-    "version": "0.1.1"
   },
   {
     "name": "csdn-clean",
@@ -103,12 +105,19 @@
     "version": "0.1.1"
   },
   {
-    "name": "deepseek-export",
+    "name": "link-jump",
     "mode": "userscript",
-    "category": "tools",
-    "distPath": "tools/deepseek-export.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/deepseek-export.user.js",
+    "category": "navigation",
+    "distPath": "navigation/link-jump.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/navigation/link-jump.user.js",
     "version": "0.1.0"
+  },
+  {
+    "name": "hexo-image-redirect",
+    "mode": "node",
+    "category": "hexo",
+    "distPath": "hexo/hexo-image-redirect.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/hexo/hexo-image-redirect.js"
   },
   {
     "name": "zhihu-helper",
@@ -119,28 +128,19 @@
     "version": "0.1.0"
   },
   {
-    "name": "bilibili-block",
+    "name": "search-helper",
+    "mode": "userscript",
+    "category": "search",
+    "distPath": "search/search-helper.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/search/search-helper.user.js",
+    "version": "0.1.0"
+  },
+  {
+    "name": "bilibili-search-filter",
     "mode": "userscript",
     "category": "bilibili",
-    "distPath": "bilibili/bilibili-block.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-block.user.js",
-    "version": "3.0.1",
-    "greasyforkId": 497929,
-    "greasyforkUrl": "https://greasyfork.org/scripts/497929"
-  },
-  {
-    "name": "obsidian-cardview",
-    "mode": "plain",
-    "category": "obsidian",
-    "distPath": "obsidian/cardview.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/obsidian/cardview.js"
-  },
-  {
-    "name": "auto-expand",
-    "mode": "userscript",
-    "category": "tools",
-    "distPath": "tools/auto-expand.user.js",
-    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/tools/auto-expand.user.js",
-    "version": "0.1.0"
+    "distPath": "bilibili/bilibili-search-filter.user.js",
+    "pagesUrl": "https://xiaolinxiaozhu.github.io/JavaScriptTools/bilibili/bilibili-search-filter.user.js",
+    "version": "1.1.0"
   }
 ]
